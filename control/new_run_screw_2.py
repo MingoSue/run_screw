@@ -98,10 +98,10 @@ def main():
             if actual_speed < 0:
                 can_motors.speed_mode(actual_speed)
                 print('gaga')
-                sleep(10)
+                sleep(5)
                 can_motors.speed_mode(0)
                 print('haha')
-                sleep(0.5)
+                sleep(3)
                 init_power = 1
                 init_direction = 1
             else:
@@ -135,7 +135,7 @@ def main():
                 sleep(0.1)
                 p.off()
                 # stop
-                sleep(3)
+                sleep(5)
                 # reverse
                 init_power = 1
                 init_direction = -1
