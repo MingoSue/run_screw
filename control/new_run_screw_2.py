@@ -4,8 +4,9 @@ import serial
 from time import sleep
 import can
 from threading import Thread
-from gpiozero import LED,DigitalInputDevice
+from gpiozero import LED, DigitalInputDevice
 import time
+
 
 class Motor:
 
@@ -76,7 +77,6 @@ class Motor:
 def main():
     can_motors = Motor('can0', 0x13)
     pre_speed = None
-    pre_power = None
     init_power = 1
     init_direction = 1
     p = LED(22)
@@ -92,14 +92,21 @@ def main():
         if power:
             # run
             if actual_speed != pre_speed:
-                can_motors.speed_mode(actual_speed)
-                pre_speed = actual_speed
-        else:
-            if pre_power:
-                can_motors.speed_mode(0)
-                pre_speed = 0
-        pre_power = power
-        sleep(0.5)
+                if actual_speed < 0:
+                    can_motors.speed_mode(actual_speed)
+                    sleep(2.5)
+                    can_motors.speed_mode(0)
+                    sleep(0.5)
+                    init_power = 1
+                    init_direction = 1
+                else:
+                    can_motors.speed_mode(actual_speed)
+        # else:
+        #     if pre_power:
+        #         can_motors.speed_mode(0)
+        #         pre_speed = 0
+        # pre_power = power
+        # sleep(0.5)
 
         can_motors.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
         sleep(0.1)
@@ -118,10 +125,13 @@ def main():
                 p.on()
                 sleep(0.1)
                 p.off()
-                init_power = 0
+                # stop
+                can_motors.speed_mode(0)
+                pre_speed = 0
                 sleep(0.5)
-                # init_power = 1
-                # init_direction = -1
+                # reverse
+                init_power = 1
+                init_direction = -1
         except Exception as e:
             print(e)
 
