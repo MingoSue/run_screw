@@ -19,11 +19,43 @@ class Motor:
         self.bus = can.interface.Bus(
             channel=can_channel, bustype='socketcan_ctypes')
         self.motor_id = motor_id
+        self.weight = 0
         # self.speed = 0
         # self.now_speed = 0
         # self.position = 0
         # self.current = 0
         self.ser = serial.Serial('/dev/ttyUSB0')
+        self.refresh_run()
+
+    def refresh_run(self):
+        t = Thread(target=self.refresh, name='refresh_can')
+        t.setDaemon(True)
+        t.start()
+        print('thread  ok~')
+
+    def refresh(self):
+        p = LED(22)
+        while True:
+            self.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
+            sleep(0.1)
+            weight_data = self.ser.read_all()
+            try:
+                weight = round(int('0x' + weight_data.hex()[10:14], 16) * 0.001, 3)
+                if weight >= 10:
+                    weight = 0
+            except Exception as e:
+                print(e)
+                weight = 0
+            try:
+                if weight > 2:
+                    self.weight = weight
+                    print('> max n : {}'.format(weight))
+                    # protect io
+                    p.on()
+                    sleep(0.1)
+                    p.off()
+            except Exception as e:
+                print(e)
 
     def send(self, aid, data):
         print(time.ctime() + 'can data {}'.format(data))
@@ -44,7 +76,7 @@ class Motor:
 
 def main():
     can_motors = Motor('can0', 0x13)
-    p = LED(22)
+    # p = LED(22)
     n = 0
     while True:
         print('nnnnnnnnnnnnnn', n)
@@ -52,26 +84,26 @@ def main():
         can_motors.speed_mode(304)
         sleep(0.5)
 
-        can_motors.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
-        sleep(0.1)
-
-        weight_data = can_motors.ser.read_all()
+        # can_motors.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
+        # sleep(0.1)
+        #
+        # weight_data = can_motors.ser.read_all()
+        # try:
+        #     weight = round(int('0x' + weight_data.hex()[10:14], 16) * 0.001, 3)
+        #     if weight >= 10:
+        #         weight = 0
+        # except Exception as e:
+        #     print(e)
+        #     weight = 0
         try:
-            weight = round(int('0x' + weight_data.hex()[10:14], 16) * 0.001, 3)
-            if weight >= 10:
-                weight = 0
-        except Exception as e:
-            print(e)
-            weight = 0
-        try:
-            print('weight==============', weight)
-            if weight > 2:
-                print('> max n : {}'.format(weight))
+            print('weight==============', can_motors.weight)
+            if can_motors.weight > 2:
+                print('> max n : {}'.format(can_motors.weight))
                 # protect io
-                can_motors.speed_mode(0)
-                p.on()
-                sleep(0.1)
-                p.off()
+                # can_motors.speed_mode(0)
+                # p.on()
+                # sleep(0.1)
+                # p.off()
                 # stop
                 sleep(5)
 
@@ -80,9 +112,9 @@ def main():
                 print('gaga')
                 sleep(3)
                 can_motors.speed_mode(0)
-                p.on()
-                sleep(0.1)
-                p.off()
+                # p.on()
+                # sleep(0.1)
+                # p.off()
                 # stop
                 print('haha')
                 sleep(3)
