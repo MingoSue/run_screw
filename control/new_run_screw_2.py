@@ -76,11 +76,13 @@ class Motor:
 
 def main():
     can_motors = Motor('can0', 0x13)
-    pre_speed = None
     init_power = 1
     init_direction = 1
     p = LED(22)
+    n = 0
     while True:
+        print('nnnnnnnnnnnnnn', n)
+        n += 1
         # power 1 :on  0:off
         power = init_power
         # direction 1 , -1
@@ -91,23 +93,22 @@ def main():
         
         if power:
             # run
-            if actual_speed != pre_speed:
-                if actual_speed < 0:
-                    can_motors.speed_mode(actual_speed)
-                    sleep(2.5)
-                    can_motors.speed_mode(0)
-                    sleep(0.5)
-                    init_power = 1
-                    init_direction = 1
-                else:
-                    can_motors.speed_mode(actual_speed)
+            if actual_speed < 0:
+                can_motors.speed_mode(actual_speed)
+                sleep(2.5)
+                can_motors.speed_mode(0)
+                sleep(0.5)
+                init_power = 1
+                init_direction = 1
+            else:
+                can_motors.speed_mode(actual_speed)
         # else:
         #     if pre_power:
         #         can_motors.speed_mode(0)
         #         pre_speed = 0
         # pre_power = power
         # sleep(0.5)
-
+        sleep(0.5)
         can_motors.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
         sleep(0.1)
         weight_data = can_motors.ser.read_all()
@@ -119,6 +120,7 @@ def main():
             print(e)
             weight = 0
         try:
+            print('weight==============', weight)
             if weight > 2:
                 print('> max n : {}'.format(weight))
                 # protect io
@@ -127,11 +129,11 @@ def main():
                 p.off()
                 # stop
                 can_motors.speed_mode(0)
-                pre_speed = 0
                 sleep(0.5)
                 # reverse
                 init_power = 1
                 init_direction = -1
+            sleep(0.5)
         except Exception as e:
             print(e)
 
