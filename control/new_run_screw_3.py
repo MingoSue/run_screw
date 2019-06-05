@@ -50,7 +50,7 @@ def main():
         print('nnnnnnnnnnnnnn', n)
         n += 1
         can_motors.speed_mode(304)
-        sleep(2)
+        sleep(0.5)
 
         can_motors.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
         sleep(0.1)
@@ -58,8 +58,8 @@ def main():
         weight_data = can_motors.ser.read_all()
         try:
             weight = round(int('0x' + weight_data.hex()[10:14], 16) * 0.001, 3)
-           # if weight >= 10:
-            #    weight = 3
+            if weight >= 10:
+                weight = 0
         except Exception as e:
             print(e)
             weight = 0
@@ -73,7 +73,7 @@ def main():
                 sleep(0.1)
                 p.off()
                 # stop
-                sleep(3)
+                sleep(5)
 
                 # reverse
                 can_motors.speed_mode(-304)
@@ -89,10 +89,10 @@ def main():
             else:
                # can_motors.speed_mode(0)
                 print('again...')
-                p.on()
+                #p.on()
+                #sleep(0.1)
+                #p.off()
                 sleep(0.1)
-                p.off()
-                sleep(3)
         except Exception as e:
             print(e)
 
