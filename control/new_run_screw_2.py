@@ -87,28 +87,34 @@ def main():
         power = init_power
         # direction 1 , -1
         direction = init_direction
+        print('direction..............', direction)
         # 20% 50%  100%
         speed = 1
         actual_speed = int(304 * speed * direction)
         
         if power:
+            print('actual speeddddddddddddd', actual_speed)
             # run
             if actual_speed < 0:
                 can_motors.speed_mode(actual_speed)
-                sleep(2.5)
+                print('gaga')
+                sleep(10)
                 can_motors.speed_mode(0)
+                print('haha')
                 sleep(0.5)
                 init_power = 1
                 init_direction = 1
             else:
+                print('aaaaaaaaaaaaaa')
                 can_motors.speed_mode(actual_speed)
+                sleep(0.5)
         # else:
         #     if pre_power:
         #         can_motors.speed_mode(0)
         #         pre_speed = 0
         # pre_power = power
         # sleep(0.5)
-        sleep(0.5)
+
         can_motors.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
         sleep(0.1)
         weight_data = can_motors.ser.read_all()
@@ -124,16 +130,15 @@ def main():
             if weight > 2:
                 print('> max n : {}'.format(weight))
                 # protect io
+                can_motors.speed_mode(0)
                 p.on()
                 sleep(0.1)
                 p.off()
                 # stop
-                can_motors.speed_mode(0)
-                sleep(0.5)
+                sleep(3)
                 # reverse
                 init_power = 1
                 init_direction = -1
-            sleep(0.5)
         except Exception as e:
             print(e)
 
