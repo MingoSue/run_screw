@@ -1,5 +1,6 @@
 import os
 import json
+import csv
 import serial
 from time import sleep
 import can
@@ -73,11 +74,16 @@ class Motor:
 
 def main():
     can_motors = Motor('can0', 0x13)
-    # p = LED(22)
     n = 0
+    # cycle times
+    m = 0
+
+    with open('screw_log.csv', "w+", newline='') as file:
+        csv_file = csv.writer(file)
+        head = ["cycle", "time", "weight"]
+        csv_file.writerow(head)
     while True:
         print('nnnnnnnnnnnnnn', n)
-        n += 1
         can_motors.speed_mode(304)
         sleep(0.5)
 
@@ -92,10 +98,21 @@ def main():
                 print('gaga')
                 sleep(3)
                 can_motors.speed_mode(0)
+                m += 1
+                n = 0
+                print('mmmmmmmmmmmmm', m)
+                with open('screw_log.csv', "a+", newline='') as f:
+                    csv_f = csv.writer(f)
+                    data = [m, time.ctime(), can_motors.weight]
+                    csv_f.writerow(data)
                 print('haha')
+
                 sleep(3)
             else:
                 print('again...')
+                n += 1
+                if n >= 100:
+                    break
                 sleep(0.5)
         except Exception as e:
             print(e)
