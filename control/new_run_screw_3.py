@@ -106,12 +106,14 @@ def main():
                     data = [m, time.ctime(), can_motors.weight]
                     csv_f.writerow(data)
                 print('haha')
+                can_motors.weight = 0
+                print('bobo...............', can_motors.weight)
 
                 sleep(3)
             else:
                 print('again...')
                 n += 1
-                if n >= 100:
+                if n >= 15:
                     print('end...')
                     with open('screw_log.csv', "a+", newline='') as fi:
                         csv_fi = csv.writer(fi)
