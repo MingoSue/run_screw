@@ -112,6 +112,10 @@ def main():
                 print('again...')
                 n += 1
                 if n >= 100:
+                    with open('screw_log.csv', "a+", newline='') as fi:
+                        csv_fi = csv.writer(fi)
+                        end = [m, time.ctime(), can_motors.weight, 'end']
+                        csv_fi.writerow(end)
                     break
                 sleep(0.5)
         except Exception as e:
