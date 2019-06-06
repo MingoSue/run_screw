@@ -78,7 +78,7 @@ def main():
     # cycle times
     m = 0
 
-    with open('screw_log.csv', "w+", newline='') as file:
+    with open('screw_log.csv', "a+", newline='') as file:
         csv_file = csv.writer(file)
         head = ["cycle", "time", "weight"]
         csv_file.writerow(head)
