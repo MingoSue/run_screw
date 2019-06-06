@@ -20,10 +20,6 @@ class Motor:
             channel=can_channel, bustype='socketcan_ctypes')
         self.motor_id = motor_id
         self.weight = 0
-        # self.speed = 0
-        # self.now_speed = 0
-        # self.position = 0
-        # self.current = 0
         self.ser = serial.Serial('/dev/ttyUSB0')
         self.refresh_run()
 
@@ -85,27 +81,10 @@ def main():
         can_motors.speed_mode(304)
         sleep(0.5)
 
-        # can_motors.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
-        # sleep(0.1)
-        #
-        # weight_data = can_motors.ser.read_all()
-        # try:
-        #     weight = round(int('0x' + weight_data.hex()[10:14], 16) * 0.001, 3)
-        #     if weight >= 10:
-        #         weight = 0
-        # except Exception as e:
-        #     print(e)
-        #     weight = 0
         try:
             print('weight==============', can_motors.weight)
             if can_motors.weight > 2:
                 print('=============> max n : {}'.format(can_motors.weight))
-                # protect io
-                # can_motors.speed_mode(0)
-                # p.on()
-                # sleep(0.1)
-                # p.off()
-                # stop
                 sleep(7)
 
                 # reverse
@@ -113,18 +92,10 @@ def main():
                 print('gaga')
                 sleep(3)
                 can_motors.speed_mode(0)
-                # p.on()
-                # sleep(0.1)
-                # p.off()
-                # stop
                 print('haha')
                 sleep(3)
             else:
-               # can_motors.speed_mode(0)
                 print('again...')
-                #p.on()
-                #sleep(0.1)
-                #p.off()
                 sleep(0.5)
         except Exception as e:
             print(e)
