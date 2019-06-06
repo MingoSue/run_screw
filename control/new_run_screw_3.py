@@ -91,12 +91,12 @@ def main():
             print('weight==============', can_motors.weight)
             if can_motors.weight > 2:
                 print('=============> max n : {}'.format(can_motors.weight))
-                sleep(7)
+                sleep(2)
 
                 # reverse
                 can_motors.speed_mode(-304)
                 print('gaga')
-                sleep(3)
+                sleep(5)
                 can_motors.speed_mode(0)
                 m += 1
                 n = 0
@@ -109,7 +109,7 @@ def main():
                 can_motors.weight = 0
                 print('bobo...............', can_motors.weight)
 
-                sleep(3)
+               # sleep(2)
             else:
                 print('again...')
                 n += 1
