@@ -52,6 +52,7 @@ class Motor:
                     print('> max n : {}'.format(weight))
                     # protect io
                     p.on()
+                    print('ppppppppppppp')
                     sleep(0.1)
                     p.off()
             except Exception as e:
@@ -98,14 +99,14 @@ def main():
         try:
             print('weight==============', can_motors.weight)
             if can_motors.weight > 2:
-                print('> max n : {}'.format(can_motors.weight))
+                print('=============> max n : {}'.format(can_motors.weight))
                 # protect io
                 # can_motors.speed_mode(0)
                 # p.on()
                 # sleep(0.1)
                 # p.off()
                 # stop
-                sleep(5)
+                sleep(7)
 
                 # reverse
                 can_motors.speed_mode(-304)
@@ -124,7 +125,7 @@ def main():
                 #p.on()
                 #sleep(0.1)
                 #p.off()
-                sleep(0.1)
+                sleep(0.5)
         except Exception as e:
             print(e)
 
