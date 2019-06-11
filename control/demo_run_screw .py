@@ -252,7 +252,7 @@ def main():
                 else:
                     if n >= 10:
                         break
-                        
+
                     # reverse
                     can_motors.speed_mode(actual_speed)
                     print('---gaga')
