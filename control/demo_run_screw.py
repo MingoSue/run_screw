@@ -7,6 +7,7 @@ import can
 from threading import Thread
 from gpiozero import LED, DigitalInputDevice
 import time
+from .models import Screw, ScrewConfig, Weight
 
 
 class Motor:
@@ -213,6 +214,13 @@ def main():
         speed = config['speed']
         actual_speed = int(304 * speed * direction)
         print('actual_speedddddddddddddddddd', actual_speed)
+        # config_data = ScrewConfig()
+        # config_data.n = weight
+        # config_data.power = power
+        # config_data.direction = direction
+        # config_data.speed = speed
+        # config_data.cycle = m
+        # config_data.save()
 
         try:
             if power:
@@ -224,19 +232,45 @@ def main():
                     if can_motors.weight > weight:
                         print('=============> max n : {}'.format(can_motors.weight))
                         sleep(2)
+                        m += 1
+                        n = 0
+
+                        record = Screw()
+                        record.cycle = m
+                        record.speed = actual_speed
+                        record.direction = 1
+                        record.current = can_motors.current if can_motors.current < 10000 else 0
+                        record.save()
 
                         # reverse
                         can_motors.speed_mode(-actual_speed)
                         print('gaga')
                         sleep(5)
-                        can_motors.speed_mode(0)
-                        m += 1
-                        n = 0
+                        # can_motors.speed_mode(0)
+                        # m += 1
+                        # n = 0
                         print('mmmmmmmmmmmmm', m)
                         with open('new_screw_log.csv', "a+", newline='') as f:
                             csv_f = csv.writer(f)
                             data = [m, time.ctime(), can_motors.weight]
                             csv_f.writerow(data)
+                        record = Screw()
+                        record.cycle = m
+                        record.speed = -actual_speed
+                        record.direction = -1
+                        record.current = can_motors.current if can_motors.current < 10000 else 0
+                        record.save()
+
+                        can_motors.speed_mode(0)
+
+                        config_data = ScrewConfig()
+                        config_data.n = weight
+                        config_data.power = power
+                        config_data.direction = direction
+                        config_data.speed = speed
+                        config_data.cycle = m
+                        config_data.save()
+
                         print('haha')
                         can_motors.weight = 0
                         print('bobo...............', can_motors.weight)

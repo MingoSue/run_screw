@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class ScrewConfig(models.Model):
+    cycle = models.IntegerField(null=True, blank=True)
     create_time = models.DateTimeField(auto_now_add=True)
     speed = models.FloatField()
     direction = models.IntegerField()
@@ -14,14 +15,17 @@ class ScrewConfig(models.Model):
     power = models.IntegerField()
 
 
-class Screw(models.Model):
+class Records(models.Model):
+    cycle = models.IntegerField(null=True, blank=True)
     create_time = models.DateTimeField(auto_now_add=True)
     speed = models.FloatField()
     direction = models.IntegerField()
     current = models.IntegerField()
+    weight = models.FloatField(default=0)
 
 
 class Weight(models.Model):
+    cycle = models.IntegerField(null=True, blank=True)
     create_time = models.DateTimeField(auto_now_add=True)
     weight = models.FloatField(default=0)
 
