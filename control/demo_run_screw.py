@@ -5,7 +5,7 @@ import serial
 from time import sleep
 import can
 from threading import Thread
-from gpiozero import LED,DigitalInputDevice
+from gpiozero import LED, DigitalInputDevice
 import time
 
 

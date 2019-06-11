@@ -86,8 +86,16 @@ WSGI_APPLICATION = 'ScrewDriver.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'screw_test',
+        'USER': 'root',
+        'PASSWORD': 'mingo',
+        # 'HOST': '192.168.122.123',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 

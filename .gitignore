@@ -2,3 +2,7 @@
 \.idea/
 
 *.csv
+
+control/__pycache__/
+
+*.pyc
