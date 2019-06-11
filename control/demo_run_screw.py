@@ -216,6 +216,7 @@ def main():
                 # run
                 if actual_speed >= 0:
                     can_motors.speed_mode(actual_speed)
+                    sleep(0.5)
                     print('weight==============', can_motors.weight)
                     if can_motors.weight > weight:
                         print('=============> max n : {}'.format(can_motors.weight))
@@ -271,6 +272,7 @@ def main():
 
                     # normal
                     can_motors.speed_mode(-actual_speed)
+                    sleep(0.5)
                     print('-----weight==============', can_motors.weight)
                     if can_motors.weight > weight:
                         print('=============> max n : ------{}'.format(can_motors.weight))
@@ -289,6 +291,7 @@ def main():
                             print('-----again...')
                             n += 1
                             can_motors.speed_mode(-actual_speed)
+                            sleep(0.5)
                             print('-----weight==============', can_motors.weight)
                             if can_motors.weight > weight:
                                 print('=============> max n : ------{}'.format(can_motors.weight))
@@ -300,6 +303,7 @@ def main():
                                     csv_f = csv.writer(f)
                                     data = [m, time.ctime(), can_motors.weight]
                                     csv_f.writerow(data)
+                                break
 
                             if n >= 10:
                                 print('-----end...')
