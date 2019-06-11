@@ -7,7 +7,7 @@ import can
 from threading import Thread
 from gpiozero import LED, DigitalInputDevice
 import time
-from .models import Screw, ScrewConfig, Weight
+from .models import Records, ScrewConfig, Weight
 
 
 class Motor:
@@ -235,7 +235,7 @@ def main():
                         m += 1
                         n = 0
 
-                        record = Screw()
+                        record = Records()
                         record.cycle = m
                         record.speed = actual_speed
                         record.direction = 1
@@ -254,7 +254,7 @@ def main():
                             csv_f = csv.writer(f)
                             data = [m, time.ctime(), can_motors.weight]
                             csv_f.writerow(data)
-                        record = Screw()
+                        record = Records()
                         record.cycle = m
                         record.speed = -actual_speed
                         record.direction = -1
