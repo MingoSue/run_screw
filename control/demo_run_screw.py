@@ -212,6 +212,7 @@ def main():
         # 20% 50%  100%
         speed = config['speed']
         actual_speed = int(304 * speed * direction)
+        print('actual_speedddddddddddddddddd', actual_speed)
 
         try:
             if power:
@@ -219,7 +220,7 @@ def main():
                 if actual_speed >= 0:
                     can_motors.speed_mode(actual_speed)
                     sleep(0.5)
-                    print('weight==============', can_motors.weight)
+                    print('can_motors.weight==============', can_motors.weight)
                     if can_motors.weight > weight:
                         print('=============> max n : {}'.format(can_motors.weight))
                         sleep(2)
@@ -244,7 +245,7 @@ def main():
                     else:
                         print('again...')
                         n += 1
-                        if n >= 10:
+                        if n >= 15:
                             print('end...')
                             with open('new_screw_log.csv', "a+", newline='') as fi:
                                 csv_fi = csv.writer(fi)
@@ -307,7 +308,7 @@ def main():
                                     csv_f.writerow(data)
                                 break
 
-                            if n >= 10:
+                            if n >= 15:
                                 print('-----end...')
                                 with open('new_screw_log.csv', "a+", newline='') as fi:
                                     csv_fi = csv.writer(fi)
