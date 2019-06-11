@@ -35,13 +35,13 @@ class Motor:
         sleep(0.01)
 
     def refresh_run(self):
-        t = Thread(target=self.refresh,name='refresh_can')
+        t = Thread(target=self.refresh, name='refresh_can')
         t.setDaemon(True)
         t.start()
-        t2 = Thread(target=self.serial_refresh,name='refresh_serial')
+        t2 = Thread(target=self.serial_refresh, name='refresh_serial')
         t2.setDaemon(True)
         t2.start()
-        t3 = Thread(target=self.button_refresh,name='refresh_button')
+        t3 = Thread(target=self.button_refresh, name='refresh_button')
         t3.setDaemon(True)
         t3.start()
         print('three thread  ok~')
