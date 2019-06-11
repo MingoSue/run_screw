@@ -24,6 +24,7 @@ class Motor:
         self.now_speed = 0
         self.position = 0
         self.current = 0
+        self.weight = 0
         self.ser = serial.Serial('/dev/ttyUSB0')
         self.refresh_run()
 
@@ -113,6 +114,7 @@ class Motor:
                     config = json.load(f)
  
                 if weight > config['n']:
+                    self.weight = weight
                     print('> max n : {}'.format(weight))
                     # config.update({'power': 0})
                     # with open('screw_config.json', 'w') as f:
