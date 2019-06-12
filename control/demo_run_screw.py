@@ -66,15 +66,6 @@ class Motor:
             sleep(0.01)
             bin_now2 = b_in.value
             bout_now2 = b_out.value
-            #sleep(0.01)
-            #bin_now3 = b_in.value
-            #bout_now3 = b_out.value
-            #sleep(0.01)
-            #bin_now4 = b_in.value
-            #bout_now4 = b_out.value
-            #sleep(0.01)
-            #bin_now5 = b_in.value
-            #bout_now5 = b_out.value
 
             #if bin_now and bin_now2 and bin_now3 and bin_now4 and bin_now5:
             if bin_now and bin_now2:
@@ -125,9 +116,7 @@ class Motor:
                 if weight > config['n']:
                     self.weight = weight
                     print('> max n : {}'.format(weight))
-                    # config.update({'power': 0})
-                    # with open('screw_config.json', 'w') as f:
-                    #     json.dump(config, f)
+
                     # protect io
                     p.on()
                     sleep(0.1)
@@ -148,7 +137,6 @@ class Motor:
             self.now_speed = now_speed
             self.current = data[0] | (data[1] << 8)
             self.position = data[4] | (data[5] << 8) | (data[6] << 16) | (data[7] << 24)
-            # print(self.current, self.now_speed, self.position)
             self.direction = 1 if self.now_speed > 0 else -1
             # sleep(0.1)
             screw_data = {'speed': self.now_speed, 'current': self.current if self.current < 10000 else 0, 'direction': self.direction}
@@ -193,8 +181,6 @@ def poweroff():
 
 def main():
     can_motors = Motor('can0', 0x13)
-    # pre_speed = None
-    # pre_power = None
 
     n = 0
     # cycle times
@@ -222,13 +208,6 @@ def main():
         speed = config['speed']
         actual_speed = int(304 * speed * direction)
         print('actual_speedddddddddddddddddd', actual_speed)
-        # config_data = ScrewConfig()
-        # config_data.n = weight
-        # config_data.power = power
-        # config_data.direction = direction
-        # config_data.speed = speed
-        # config_data.cycle = m
-        # config_data.save()
 
         try:
             if power:
@@ -255,9 +234,7 @@ def main():
                         can_motors.speed_mode(-actual_speed)
                         print('gaga')
                         sleep(5)
-                        # can_motors.speed_mode(0)
-                        # m += 1
-                        # n = 0
+
                         print('mmmmmmmmmmmmm', m)
                         with open('new_screw_log.csv', "a+", newline='') as f:
                             csv_f = csv.writer(f)
@@ -316,13 +293,6 @@ def main():
                     record.save()
 
                     can_motors.speed_mode(0)
-                    # m += 1
-                    # n = 0
-                    # print('-----mmmmmmmmmmmmm', m)
-                    # with open('new_screw_log.csv', "a+", newline='') as f:
-                    #     csv_f = csv.writer(f)
-                    #     data = [m, time.ctime(), can_motors.weight]
-                    #     csv_f.writerow(data)
                     print('------haha')
                     can_motors.weight = 0
                     print('------bobo...............', can_motors.weight)
@@ -358,8 +328,6 @@ def main():
                         config_data.cycle = m
                         config_data.save()
                     else:
-                        # print('-----again...')
-                        # n += 1
                         while True:
                             print('-----again...')
                             n += 1
