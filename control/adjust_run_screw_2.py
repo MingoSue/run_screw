@@ -214,12 +214,22 @@ def main():
                 # run
                 if actual_speed >= 0:
                     can_motors.speed_mode(actual_speed)
+
+                    record = Records()
+                    record.cycle = m
+                    record.speed = actual_speed
+                    record.direction = 1
+                    record.current = can_motors.current if can_motors.current < 10000 else 0
+                    record.weight = can_motors.weight
+                    record.status = Records.START
+                    record.save()
+
                     sleep(0.5)
                     print('can_motors.weight==============', can_motors.weight)
                     if can_motors.weight > weight:
                         print('=============> max n : {}'.format(can_motors.weight))
                         sleep(2)
-                        m += 1
+                        # m += 1
                         n = 0
 
                         record = Records()
@@ -228,6 +238,7 @@ def main():
                         record.direction = 1
                         record.current = can_motors.current if can_motors.current < 10000 else 0
                         record.weight = can_motors.weight
+                        record.status = Records.END
                         record.save()
 
                         # reverse
@@ -259,6 +270,7 @@ def main():
                         config_data.save()
 
                         print('haha')
+                        m += 1
                         can_motors.weight = 0
                         print('bobo...............', can_motors.weight)
 

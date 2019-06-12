@@ -16,12 +16,22 @@ class ScrewConfig(models.Model):
 
 
 class Records(models.Model):
+    STAND = 0
+    START = 1
+    END = -1
+    STATUS_CHOICES = (
+        (STAND, '待机'),
+        (START, '开始'),
+        (END, '结束'),
+    )
+
     cycle = models.IntegerField(null=True, blank=True)
     create_time = models.DateTimeField(auto_now_add=True)
     speed = models.FloatField()
     direction = models.IntegerField()
     current = models.IntegerField()
     weight = models.FloatField(default=0)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=STAND)
 
 
 class Weight(models.Model):
