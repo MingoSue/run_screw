@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import csv
 import serial
@@ -7,7 +8,14 @@ import can
 from threading import Thread
 from gpiozero import LED, DigitalInputDevice
 import time
-from .models import Records, ScrewConfig, Weight
+import django
+
+sys.path.append('..')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ScrewDriver.settings")
+
+django.setup()
+
+from control.models import Records, ScrewConfig, Weight
 
 
 class Motor:
@@ -240,6 +248,7 @@ def main():
                         record.speed = actual_speed
                         record.direction = 1
                         record.current = can_motors.current if can_motors.current < 10000 else 0
+                        record.weight = can_motors.weight
                         record.save()
 
                         # reverse
@@ -259,6 +268,7 @@ def main():
                         record.speed = -actual_speed
                         record.direction = -1
                         record.current = can_motors.current if can_motors.current < 10000 else 0
+                        record.weight = can_motors.weight
                         record.save()
 
                         can_motors.speed_mode(0)
@@ -291,10 +301,20 @@ def main():
                     if n >= 10:
                         break
 
+                    m += 1
                     # reverse
                     can_motors.speed_mode(actual_speed)
                     print('---gaga')
                     sleep(5)
+
+                    record = Records()
+                    record.cycle = m
+                    record.speed = actual_speed
+                    record.direction = -1
+                    record.current = can_motors.current if can_motors.current < 10000 else 0
+                    record.weight = can_motors.weight
+                    record.save()
+
                     can_motors.speed_mode(0)
                     # m += 1
                     # n = 0
@@ -314,13 +334,29 @@ def main():
                     if can_motors.weight > weight:
                         print('=============> max n : ------{}'.format(can_motors.weight))
                         sleep(2)
-                        m += 1
+                        # m += 1
                         n = 0
                         print('-----mmmmmmmmmmmmm', m)
                         with open('new_screw_log.csv', "a+", newline='') as f:
                             csv_f = csv.writer(f)
                             data = [m, time.ctime(), can_motors.weight]
                             csv_f.writerow(data)
+
+                        record = Records()
+                        record.cycle = m
+                        record.speed = -actual_speed
+                        record.direction = 1
+                        record.current = can_motors.current if can_motors.current < 10000 else 0
+                        record.weight = can_motors.weight
+                        record.save()
+
+                        config_data = ScrewConfig()
+                        config_data.n = weight
+                        config_data.power = power
+                        config_data.direction = direction
+                        config_data.speed = speed
+                        config_data.cycle = m
+                        config_data.save()
                     else:
                         # print('-----again...')
                         # n += 1
@@ -333,13 +369,30 @@ def main():
                             if can_motors.weight > weight:
                                 print('=============> max n : ------{}'.format(can_motors.weight))
                                 sleep(2)
-                                m += 1
+                                # m += 1
                                 n = 0
                                 print('-----mmmmmmmmmmmmm', m)
                                 with open('new_screw_log.csv', "a+", newline='') as f:
                                     csv_f = csv.writer(f)
                                     data = [m, time.ctime(), can_motors.weight]
                                     csv_f.writerow(data)
+
+                                record = Records()
+                                record.cycle = m
+                                record.speed = -actual_speed
+                                record.direction = 1
+                                record.current = can_motors.current if can_motors.current < 10000 else 0
+                                record.weight = can_motors.weight
+                                record.save()
+
+                                config_data = ScrewConfig()
+                                config_data.n = weight
+                                config_data.power = power
+                                config_data.direction = direction
+                                config_data.speed = speed
+                                config_data.cycle = m
+                                config_data.save()
+
                                 break
 
                             if n >= 15:
