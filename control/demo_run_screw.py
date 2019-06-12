@@ -233,7 +233,7 @@ def main():
                         # reverse
                         can_motors.speed_mode(-actual_speed)
                         print('gaga')
-                        sleep(5)
+                        sleep(4)
 
                         print('mmmmmmmmmmmmm', m)
                         with open('new_screw_log.csv', "a+", newline='') as f:
@@ -282,7 +282,7 @@ def main():
                     # reverse
                     can_motors.speed_mode(actual_speed)
                     print('---gaga')
-                    sleep(5)
+                    sleep(4)
 
                     record = Records()
                     record.cycle = m
