@@ -211,22 +211,38 @@ def main():
         csv_file = csv.writer(file)
         head = ["cycle", "time", "weight"]
         csv_file.writerow(head)
+
+    try:
+        with open('adjust_screw_config.json', 'r') as f:
+            config = json.load(f)
+    except:
+        # continue
+        pass
+    weight = config['n']
+    # power 1 :on  0:off
+    power = config['power']
+    # direction 1 , -1
+    direction = config['direction']
+    # 20% 50%  100%
+    speed = config['speed']
+    # actual_speed = int(304 * speed * direction)
+
     while True:
-        try:
-            with open('adjust_screw_config.json', 'r') as f:
-                config = json.load(f)
-        except:
-            continue
+        # try:
+        #     with open('adjust_screw_config.json', 'r') as f:
+        #         config = json.load(f)
+        # except:
+        #     continue
 
         print('nnnnnnnnnnnnnn', n)
 
-        weight = config['n']
-        # power 1 :on  0:off
-        power = config['power']
-        # direction 1 , -1
-        direction = config['direction']
-        # 20% 50%  100%
-        speed = config['speed']
+        # weight = config['n']
+        # # power 1 :on  0:off
+        # power = config['power']
+        # # direction 1 , -1
+        # direction = config['direction']
+        # # 20% 50%  100%
+        # speed = config['speed']
         actual_speed = int(304 * speed * direction)
         print('actual_speedddddddddddddddddd', actual_speed)
 
@@ -234,9 +250,9 @@ def main():
             if power:
                 # run
                 if actual_speed >= 0:
-                    record_list = Records.objects.filter(direction=1, d_weight__lte=1).distinct().aggregate(Avg('total_time'))
+                    record_list = Records.objects.filter(direction=1, d_weight__lte=1, d_weight__gt=0).distinct().aggregate(Avg('total_time'))
                     print('record_list==========', record_list)
-                    avg_time = record_list['total_time__avg']
+                    avg_time = record_list['total_time__avg'] if record_list['total_time__avg'] else 0.0
                     if avg_time != 0.0:
                         # first stage
                         can_motors.speed_mode(actual_speed)
@@ -274,7 +290,7 @@ def main():
                             record.save()
 
                             # reverse
-                            can_motors.speed_mode(-actual_speed)
+                            can_motors.speed_mode(-304)
                             print('gaga')
                             sleep(4)
 
@@ -285,7 +301,7 @@ def main():
                                 csv_f.writerow(data)
                             record = Records()
                             record.cycle = m
-                            record.speed = -actual_speed
+                            record.speed = -304
                             record.direction = -1
                             record.current = can_motors.current if can_motors.current < 10000 else 0
                             record.weight = can_motors.weight
@@ -339,12 +355,14 @@ def main():
                             record.cycle = m
                             record.weight = can_motors.weight
                             record.d_weight = can_motors.weight - weight
+                            if record.d_weight > 1:
+                                speed -= 0.05
                             record.end_time = get_current_time()
                             record.total_time = (record.end_time - record.start_time).seconds
                             record.save()
 
                             # reverse
-                            can_motors.speed_mode(-actual_speed)
+                            can_motors.speed_mode(-304)
                             print('gaga')
                             sleep(4)
 
@@ -355,7 +373,7 @@ def main():
                                 csv_f.writerow(data)
                             record = Records()
                             record.cycle = m
-                            record.speed = -actual_speed
+                            record.speed = -304
                             record.direction = -1
                             record.current = can_motors.current if can_motors.current < 10000 else 0
                             record.weight = can_motors.weight
