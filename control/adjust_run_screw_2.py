@@ -215,9 +215,10 @@ def main():
     try:
         with open('adjust_screw_config.json', 'r') as f:
             config = json.load(f)
-    except:
-        # continue
-        pass
+    except Exception as e:
+        print('config error', e)
+        config = {"speed": 0.2, "direction": 1, "n": 2, "power": 1}
+
     weight = config['n']
     # power 1 :on  0:off
     power = config['power']
