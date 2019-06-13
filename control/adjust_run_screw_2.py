@@ -118,7 +118,7 @@ class Motor:
         p = LED(22)
         while True:
             self.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
-            sleep(0.1)
+            sleep(0.05)
             weight_data = self.ser.read_all()
             try:
                 weight = round(int('0x'+weight_data.hex()[10:14], 16)*0.001, 3)
@@ -217,8 +217,9 @@ def main():
             config = json.load(f)
     except Exception as e:
         print('config error', e)
-        config = {"speed": 0.2, "direction": 1, "n": 2, "power": 1}
+        config = {"speed": 0.2, "direction": 1, "n": 2, "power": 1, "manual": 0}
 
+    manual = config['manual']
     weight = config['n']
     # power 1 :on  0:off
     power = config['power']
@@ -274,8 +275,9 @@ def main():
                             can_motors.speed_mode(0)
 
                             can_motors.speed_mode(actual_speed)
-                            sleep(sleep_time)
+                            sleep(0.5)
                         else:
+                            print('666666666666')
                             sleep_time = 0.5
 
                             can_motors.speed_mode(actual_speed)
