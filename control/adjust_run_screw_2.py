@@ -1,4 +1,4 @@
-import os
+import os, pytz
 import sys
 import json
 import csv
@@ -9,6 +9,8 @@ from threading import Thread
 from gpiozero import LED, DigitalInputDevice
 import time
 import django
+from django.utils import timezone
+from django.db.models import Avg
 
 sys.path.append('..')
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ScrewDriver.settings")
@@ -16,6 +18,25 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ScrewDriver.settings")
 django.setup()
 
 from control.models import Records, ScrewConfig, Weight
+
+
+def get_current_time(datetimenow=None, naive_datetime=False, customtimezone=None):
+    timezone_datetime = datetimenow
+    if datetimenow and not datetimenow.tzinfo:
+        # change naive datetime to datetime with timezone
+        # use timezone.localize will include day light saving to get more accurate timing
+        timezone_datetime = pytz.timezone(os.environ.get('TZ')).localize(datetimenow)
+    tz = None
+    if customtimezone:
+        try:
+            tz = pytz.timezone(customtimezone)
+        except:
+            pass
+
+    # convert to datetime with user local timezone
+    converted_datetime = timezone.localtime(timezone_datetime or timezone.now(), tz)
+    # return datetime converted
+    return converted_datetime.replace(tzinfo=None) if naive_datetime else converted_datetime
 
 
 class Motor:
@@ -213,79 +234,159 @@ def main():
             if power:
                 # run
                 if actual_speed >= 0:
-                    can_motors.speed_mode(actual_speed)
-
-                    record = Records()
-                    record.cycle = m
-                    record.speed = actual_speed
-                    record.direction = 1
-                    record.current = can_motors.current if can_motors.current < 10000 else 0
-                    record.weight = can_motors.weight
-                    record.status = Records.START
-                    record.save()
-
-                    sleep(0.5)
-                    print('can_motors.weight==============', can_motors.weight)
-                    if can_motors.weight > weight:
-                        print('=============> max n : {}'.format(can_motors.weight))
-                        sleep(2)
-                        # m += 1
-                        n = 0
+                    record_list = Records.objects.filter(direction=1, d_weight__lte=1).distinct().aggregate(Avg('total_time'))
+                    print('record_list==========', record_list)
+                    avg_time = record_list['total_time__avg']
+                    if avg_time != 0.0:
+                        # first stage
+                        can_motors.speed_mode(actual_speed)
+                        sleep(avg_time / 3)
 
                         record = Records()
-                        record.cycle = m
                         record.speed = actual_speed
                         record.direction = 1
                         record.current = can_motors.current if can_motors.current < 10000 else 0
-                        record.weight = can_motors.weight
-                        record.status = Records.END
-                        record.save()
+                        record.config_weight = weight
+                        record.start_time = get_current_time()
 
-                        # reverse
-                        can_motors.speed_mode(-actual_speed)
-                        print('gaga')
-                        sleep(4)
+                        # second stage
+                        second_speed = int(actual_speed * 0.8)
+                        can_motors.speed_mode(second_speed)
+                        sleep(avg_time / 3)
 
-                        print('mmmmmmmmmmmmm', m)
-                        with open('adjust_screw_log.csv', "a+", newline='') as f:
-                            csv_f = csv.writer(f)
-                            data = [m, time.ctime(), can_motors.weight]
-                            csv_f.writerow(data)
-                        record = Records()
-                        record.cycle = m
-                        record.speed = -actual_speed
-                        record.direction = -1
-                        record.current = can_motors.current if can_motors.current < 10000 else 0
-                        record.weight = can_motors.weight
-                        record.save()
-
-                        can_motors.speed_mode(0)
-
-                        config_data = ScrewConfig()
-                        config_data.n = weight
-                        config_data.power = power
-                        config_data.direction = direction
-                        config_data.speed = speed
-                        config_data.cycle = m
-                        config_data.save()
-
-                        print('haha')
-                        m += 1
-                        can_motors.weight = 0
-                        print('bobo...............', can_motors.weight)
-
-                    # sleep(2)
-                    else:
-                        print('again...')
-                        n += 1
-                        if n >= 15:
-                            print('end...')
-                            with open('adjust_screw_log.csv', "a+", newline='') as fi:
-                                csv_fi = csv.writer(fi)
-                                end = [m, time.ctime(), can_motors.weight, 'end']
-                                csv_fi.writerow(end)
-                            break
+                        # third stage
+                        second_speed = int(actual_speed * 0.2)
+                        can_motors.speed_mode(second_speed)
                         sleep(0.5)
+
+                        print('can_motors.weightaaaaaaaaaaaaaa', can_motors.weight)
+                        if can_motors.weight > weight:
+                            print('aaaaaaaaaaaaaaaaa> max n : {}'.format(can_motors.weight))
+                            sleep(2)
+                            m += 1
+                            n = 0
+
+                            record.cycle = m
+                            record.weight = can_motors.weight
+                            record.d_weight = can_motors.weight - weight
+                            record.end_time = get_current_time()
+                            record.total_time = (record.end_time - record.start_time).seconds
+                            record.save()
+
+                            # reverse
+                            can_motors.speed_mode(-actual_speed)
+                            print('gaga')
+                            sleep(4)
+
+                            print('aaaaaaaaaaaaaaammmmmmmmmmmmm', m)
+                            with open('adjust_screw_log.csv', "a+", newline='') as f:
+                                csv_f = csv.writer(f)
+                                data = [m, time.ctime(), can_motors.weight]
+                                csv_f.writerow(data)
+                            record = Records()
+                            record.cycle = m
+                            record.speed = -actual_speed
+                            record.direction = -1
+                            record.current = can_motors.current if can_motors.current < 10000 else 0
+                            record.weight = can_motors.weight
+                            record.save()
+
+                            can_motors.speed_mode(0)
+
+                            config_data = ScrewConfig()
+                            config_data.n = weight
+                            config_data.power = power
+                            config_data.direction = direction
+                            config_data.speed = speed
+                            config_data.cycle = m
+                            config_data.save()
+
+                            print('aaaaaaaaaahaha')
+                            can_motors.weight = 0
+                            print('boboaaaaaaaaaaaa', can_motors.weight)
+
+                        # sleep(2)
+                        else:
+                            print('aaaaaaaaaaaagain...')
+                            n += 1
+                            if n >= 15:
+                                print('aaaaaaaaaaend...')
+                                with open('adjust_screw_log.csv', "a+", newline='') as fi:
+                                    csv_fi = csv.writer(fi)
+                                    end = [m, time.ctime(), can_motors.weight, 'end']
+                                    csv_fi.writerow(end)
+                                break
+                            sleep(0.5)
+
+                    else:
+                        can_motors.speed_mode(actual_speed)
+                        sleep(0.5)
+
+                        record = Records()
+                        record.speed = actual_speed
+                        record.direction = 1
+                        record.current = can_motors.current if can_motors.current < 10000 else 0
+                        record.config_weight = weight
+                        record.start_time = get_current_time()
+
+                        print('can_motors.weight==============', can_motors.weight)
+                        if can_motors.weight > weight:
+                            print('=============> max n : {}'.format(can_motors.weight))
+                            sleep(2)
+                            m += 1
+                            n = 0
+
+                            record.cycle = m
+                            record.weight = can_motors.weight
+                            record.d_weight = can_motors.weight - weight
+                            record.end_time = get_current_time()
+                            record.total_time = (record.end_time - record.start_time).seconds
+                            record.save()
+
+                            # reverse
+                            can_motors.speed_mode(-actual_speed)
+                            print('gaga')
+                            sleep(4)
+
+                            print('mmmmmmmmmmmmm', m)
+                            with open('adjust_screw_log.csv', "a+", newline='') as f:
+                                csv_f = csv.writer(f)
+                                data = [m, time.ctime(), can_motors.weight]
+                                csv_f.writerow(data)
+                            record = Records()
+                            record.cycle = m
+                            record.speed = -actual_speed
+                            record.direction = -1
+                            record.current = can_motors.current if can_motors.current < 10000 else 0
+                            record.weight = can_motors.weight
+                            record.save()
+
+                            can_motors.speed_mode(0)
+
+                            config_data = ScrewConfig()
+                            config_data.n = weight
+                            config_data.power = power
+                            config_data.direction = direction
+                            config_data.speed = speed
+                            config_data.cycle = m
+                            config_data.save()
+
+                            print('haha')
+                            can_motors.weight = 0
+                            print('bobo...............', can_motors.weight)
+
+                        # sleep(2)
+                        else:
+                            print('again...')
+                            n += 1
+                            if n >= 15:
+                                print('end...')
+                                with open('adjust_screw_log.csv', "a+", newline='') as fi:
+                                    csv_fi = csv.writer(fi)
+                                    end = [m, time.ctime(), can_motors.weight, 'end']
+                                    csv_fi.writerow(end)
+                                break
+                            sleep(0.5)
                 else:
                     if n >= 10:
                         break
