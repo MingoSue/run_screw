@@ -227,6 +227,8 @@ def main():
     speed = config['speed']
     # actual_speed = int(304 * speed * direction)
 
+    sleep_time = 0.5
+
     while True:
         # try:
         #     with open('adjust_screw_config.json', 'r') as f:
@@ -254,24 +256,32 @@ def main():
                     print('record_list==========', record_list)
                     avg_time = record_list['total_time__avg'] if record_list['total_time__avg'] else 0.0
                     if avg_time != 0.0:
+                        s_time = avg_time - sleep_time
+                        print('sssssssssss_time', s_time)
                         # first stage
-                        can_motors.speed_mode(actual_speed)
-                        sleep(avg_time / 3)
+                        can_motors.speed_mode(304)
+                        if s_time > 0:
+                            sleep(s_time * 0.8)
+                        else:
+                            sleep(avg_time / 2)
 
                         record = Records()
-                        record.speed = actual_speed
+                        record.speed = 304
                         record.direction = 1
                         record.current = can_motors.current if can_motors.current < 10000 else 0
                         record.config_weight = weight
                         record.start_time = get_current_time()
 
                         # second stage
-                        second_speed = int(actual_speed * 0.8)
+                        second_speed = int(304 * 0.8)
                         can_motors.speed_mode(second_speed)
-                        sleep(avg_time / 3)
+                        if s_time > 0:
+                            sleep(s_time * 0.2)
+                        else:
+                            sleep(avg_time / 3)
 
                         # third stage
-                        second_speed = int(actual_speed * 0.2)
+                        second_speed = int(304 * 0.2)
                         can_motors.speed_mode(second_speed)
                         sleep(0.5)
 
@@ -285,6 +295,8 @@ def main():
                             record.cycle = m
                             record.weight = can_motors.weight
                             record.d_weight = can_motors.weight - weight
+                            if record.d_weight > 1 and sleep_time < avg_time:
+                                sleep_time += 0.5
                             record.end_time = get_current_time()
                             record.total_time = (record.end_time - record.start_time).seconds
                             record.save()
