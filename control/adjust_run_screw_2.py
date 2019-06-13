@@ -260,35 +260,64 @@ def main():
                         s_time = avg_time - sleep_time
                         print('sssssssssss_time', s_time)
                         # first stage
-                        can_motors.speed_mode(304)
+                        # can_motors.speed_mode(304)
                         if s_time > 0:
-                            sleep(s_time * 0.8)
+                            can_motors.speed_mode(304)
+                            sleep(s_time)
+                            record = Records()
+                            record.speed = 304
+                            record.direction = 1
+                            record.current = can_motors.current if can_motors.current < 10000 else 0
+                            record.config_weight = weight
+                            record.start_time = get_current_time()
+
+                            can_motors.speed_mode(0)
+
+                            can_motors.speed_mode(actual_speed)
+                            sleep(sleep_time)
                         else:
-                            sleep(avg_time / 2)
+                            sleep_time = 0.5
 
-                        record = Records()
-                        record.speed = 304
-                        record.direction = 1
-                        record.current = can_motors.current if can_motors.current < 10000 else 0
-                        record.config_weight = weight
-                        record.start_time = get_current_time()
+                            can_motors.speed_mode(actual_speed)
+                            sleep(sleep_time)
 
-                        can_motors.speed_mode(0)
+                            record = Records()
+                            record.speed = actual_speed
+                            record.direction = 1
+                            record.current = can_motors.current if can_motors.current < 10000 else 0
+                            record.config_weight = weight
+                            record.start_time = get_current_time()
+
+                            # final_time = avg_time * 0.2
+                            # if final_time >= 0.5:
+                            #     sleep(avg_time / 0.8)
+                            # else:
+                            #     sleep(avg_time - 0.5)
+
+                        # record = Records()
+                        # record.speed = 304
+                        # record.direction = 1
+                        # record.current = can_motors.current if can_motors.current < 10000 else 0
+                        # record.config_weight = weight
+                        # record.start_time = get_current_time()
+                        #
+                        # can_motors.speed_mode(0)
 
                         # second stage
-                        second_speed = int(304 * 0.8)
-                        can_motors.speed_mode(second_speed)
-                        if s_time > 0:
-                            sleep(s_time * 0.2)
-                        else:
-                            sleep(avg_time / 3)
+                        # second_speed = int(304 * 0.5)
+                        # can_motors.speed_mode(second_speed)
+                        # if s_time > 0:
+                        #     sleep(s_time * 0.2)
+                        # else:
+                        #     sleep(avg_time / 3)
 
-                        can_motors.speed_mode(0)
+                        # can_motors.speed_mode(0)
 
                         # third stage
-                        third_speed = int(304 * 0.2)
-                        can_motors.speed_mode(third_speed)
-                        sleep(0.5)
+                        # third_speed = int(304 * 0.2)
+                        # can_motors.speed_mode(third_speed)
+                        # can_motors.speed_mode(actual_speed)
+                        # sleep(sleep_time)
 
                         print('can_motors.weightaaaaaaaaaaaaaa', can_motors.weight)
                         if can_motors.weight > weight:
@@ -300,8 +329,10 @@ def main():
                             record.cycle = m
                             record.weight = can_motors.weight
                             record.d_weight = can_motors.weight - weight
-                            if record.d_weight > 1 and sleep_time < avg_time:
-                                sleep_time += 0.5
+                            if record.d_weight > 1:
+                                speed -= 0.05
+                                if sleep_time < avg_time:
+                                    sleep_time += 0.5
                             record.end_time = get_current_time()
                             record.total_time = (record.end_time - record.start_time).seconds
                             record.save()
