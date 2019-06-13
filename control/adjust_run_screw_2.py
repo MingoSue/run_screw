@@ -272,6 +272,8 @@ def main():
                         record.config_weight = weight
                         record.start_time = get_current_time()
 
+                        can_motors.speed_mode(0)
+
                         # second stage
                         second_speed = int(304 * 0.8)
                         can_motors.speed_mode(second_speed)
@@ -280,9 +282,11 @@ def main():
                         else:
                             sleep(avg_time / 3)
 
+                        can_motors.speed_mode(0)
+
                         # third stage
-                        second_speed = int(304 * 0.2)
-                        can_motors.speed_mode(second_speed)
+                        third_speed = int(304 * 0.2)
+                        can_motors.speed_mode(third_speed)
                         sleep(0.5)
 
                         print('can_motors.weightaaaaaaaaaaaaaa', can_motors.weight)
