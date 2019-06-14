@@ -273,9 +273,12 @@ def main():
                             record.start_time = get_current_time()
 
                             can_motors.speed_mode(0)
-
-                            can_motors.speed_mode(actual_speed)
-                            sleep(0.5)
+                            while True:
+                                can_motors.speed_mode(actual_speed)
+                                sleep(0.5)
+                                record.actual_speed = actual_speed
+                                if can_motors.weight > weight:
+                                    break
                         else:
                             print('666666666666')
                             sleep_time = 0.5

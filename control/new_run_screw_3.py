@@ -85,8 +85,13 @@ def main():
     while True:
         print('nnnnnnnnnnnnnn', n)
         can_motors.speed_mode(304)
-        sleep(0.5)
-
+        sleep(2)
+        can_motors.speed_mode(0)
+        while True:
+            can_motors.speed_mode(int(304 * 0.5))
+            sleep(0.5)
+            if can_motors.weight > 2:
+                break
         try:
             print('weight==============', can_motors.weight)
             if can_motors.weight > 2:

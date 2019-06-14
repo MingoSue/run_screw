@@ -18,7 +18,7 @@ class ScrewConfig(models.Model):
 class Records(models.Model):
     cycle = models.IntegerField(null=True, blank=True)
     create_time = models.DateTimeField(auto_now_add=True)
-    speed = models.FloatField()
+    speed = models.FloatField(null=True, blank=True)
     direction = models.IntegerField()
     current = models.IntegerField()
     weight = models.FloatField(default=0)
@@ -27,6 +27,7 @@ class Records(models.Model):
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
     total_time = models.IntegerField(default=0)
+    actual_speed = models.FloatField(null=True, blank=True)
 
 
 class Weight(models.Model):
