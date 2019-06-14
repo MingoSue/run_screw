@@ -217,9 +217,9 @@ def main():
             config = json.load(f)
     except Exception as e:
         print('config error', e)
-        config = {"speed": 0.2, "direction": 1, "n": 2, "power": 1, "manual": 0}
+        config = {"speed": 0.2, "direction": 1, "n": 2, "power": 1, "auto": 1}
 
-    manual = config['manual']
+    auto = config['auto']
     weight = config['n']
     # power 1 :on  0:off
     power = config['power']
@@ -229,7 +229,7 @@ def main():
     speed = config['speed']
     # actual_speed = int(304 * speed * direction)
 
-    sleep_time = 0.5
+    # sleep_time = 0.5
 
     while True:
         # try:
@@ -254,11 +254,17 @@ def main():
             if power:
                 # run
                 if actual_speed >= 0:
-                    record_list = Records.objects.filter(direction=1, d_weight__lte=1, d_weight__gt=0).distinct().aggregate(Avg('total_time'))
-                    print('record_list==========', record_list)
-                    avg_time = record_list['total_time__avg'] if record_list['total_time__avg'] else 0.0
+                    settled_list = Records.objects.filter(is_settled=True).distinct().aggregate(Avg('total_time'))
+                    if settled_list['total_time__avg']:
+                        avg_time = settled_list['total_time__avg']
+                        print('%%%%%%%%%%%%%avg_time', avg_time)
+                    else:
+                        record_list = Records.objects.filter(direction=1, d_weight__lte=1,
+                                                             d_weight__gt=0).distinct().aggregate(Avg('total_time'))
+                        print('record_list==========', record_list)
+                        avg_time = record_list['total_time__avg'] if record_list['total_time__avg'] else 0.0
                     if avg_time != 0.0:
-                        s_time = avg_time - sleep_time
+                        s_time = avg_time - 0.5
                         print('sssssssssss_time', s_time)
                         # first stage
                         # can_motors.speed_mode(304)
@@ -281,10 +287,16 @@ def main():
                                     break
                         else:
                             print('666666666666')
-                            sleep_time = 0.5
+                            # sleep_time = 0.5
 
-                            can_motors.speed_mode(actual_speed)
-                            sleep(sleep_time)
+                            while True:
+                                can_motors.speed_mode(actual_speed)
+                                sleep(0.5)
+                                if can_motors.weight > weight:
+                                    break
+
+                            # can_motors.speed_mode(actual_speed)
+                            # sleep(0.5)
 
                             record = Records()
                             record.speed = actual_speed
@@ -336,8 +348,10 @@ def main():
                             record.d_weight = can_motors.weight - weight
                             if record.d_weight > 1:
                                 speed -= 0.05
-                                if sleep_time < avg_time:
-                                    sleep_time += 0.5
+                                # if sleep_time < avg_time:
+                                #     sleep_time += 0.5
+                            else:
+                                record.is_settled = True
                             record.end_time = get_current_time()
                             record.total_time = (record.end_time - record.start_time).seconds
                             record.save()
@@ -367,6 +381,7 @@ def main():
                             config_data.power = power
                             config_data.direction = direction
                             config_data.speed = speed
+                            config_data.actual_speed = actual_speed
                             config_data.cycle = m
                             config_data.save()
 
@@ -439,6 +454,7 @@ def main():
                             config_data.power = power
                             config_data.direction = direction
                             config_data.speed = speed
+                            config_data.actual_speed = actual_speed
                             config_data.cycle = m
                             config_data.save()
 
@@ -509,6 +525,7 @@ def main():
                         config_data.power = power
                         config_data.direction = direction
                         config_data.speed = speed
+                        config_data.actual_speed = actual_speed
                         config_data.cycle = m
                         config_data.save()
                     else:
@@ -542,6 +559,7 @@ def main():
                                 config_data.power = power
                                 config_data.direction = direction
                                 config_data.speed = speed
+                                config_data.actual_speed = actual_speed
                                 config_data.cycle = m
                                 config_data.save()
 

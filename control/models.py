@@ -13,6 +13,8 @@ class ScrewConfig(models.Model):
     direction = models.IntegerField()
     n = models.IntegerField()
     power = models.IntegerField()
+    actual_speed = models.FloatField(null=True, blank=True)
+    auto = models.IntegerField(default=1)
 
 
 class Records(models.Model):
@@ -28,6 +30,7 @@ class Records(models.Model):
     end_time = models.DateTimeField(null=True, blank=True)
     total_time = models.IntegerField(default=0)
     actual_speed = models.FloatField(null=True, blank=True)
+    is_settled = models.BooleanField(default=False)
 
 
 class Weight(models.Model):
