@@ -99,6 +99,8 @@ class MotorZ:
         sleep(0.01)
 
     def run(self, step, direction):
+        # direction = 1 (left, down)
+        # direction = -1 (right, up)
         # 7-14
         if step > 2147483647:
             raise ValueError("step parameter must be a int integer and between 0~2147483647")
@@ -141,13 +143,20 @@ def main():
         csv_file.writerow(head)
 
     step = 0
+    step_right = 0
     while True:
-        step += 5000
         if step > 50000:
             m1.run(5000, -1)
+            step_right += 5000
+            if step_right > 50000:
+                m1.run(5000, 1)
+                step = 5000
+                step_right = 0
             # break
+
         else:
             m1.run(5000, 1)
+            step += 5000
 
         while True:
             m2.run(5000, 1)
