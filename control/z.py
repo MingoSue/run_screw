@@ -2,14 +2,14 @@ import os
 from time import sleep
 import can
 
+
 class Motor:
     # None for direction ,0x23 => 1  0x24 => -1 
-    run_data = [0x00,0x20,None,0x00,0x00,0x00,0x00,0x03]
-    stop_data = [0x00,0x20,0x25,0x00,0x00,0x00,0x00,0x01]
+    run_data = [0x00, 0x20, None, 0x00, 0x00, 0x00, 0x00, 0x03]
+    stop_data = [0x00, 0x20, 0x25, 0x00, 0x00, 0x00, 0x00, 0x01]
     # None for speed level   1,2,3,4,5,6 - (32,16,8,4,2,1)  1 is slowest   6 is fastest
-    set_speed_data = [0x00,0x20,0x33,None,0x00,0x00,0x00,0x0a]
-    speed_level_mapping = [0x20,0x10,0x08,0x04,0x02,0x01]
-
+    set_speed_data = [0x00, 0x20, 0x33, None, 0x00, 0x00, 0x00, 0x0a]
+    speed_level_mapping = [0x20, 0x10, 0x08, 0x04, 0x02, 0x01]
 
     def __init__(self, can_channel, motor_id):
         """
@@ -24,12 +24,10 @@ class Motor:
         self.now_speed = 0
         self.alive = False
 
- 
     def send(self, aid, data):
         msg = can.Message(arbitration_id=aid, data=data, extended_id=False)
         self.bus.send(msg, timeout=1)
         sleep(0.01)
-
 
     def run(self, step, direction):
         # 7-14
@@ -56,5 +54,5 @@ class Motor:
 
 if __name__ == "__main__":
     m1 = Motor('can0', 0xc1)
-    m1.run(10000,-1)
+    m1.run(10000, -1)
 
