@@ -145,18 +145,6 @@ def main():
     step = 0
     step_right = 0
     while True:
-        if step > 50000:
-            m1.run(5000, -1)
-            step_right += 5000
-            if step_right > 50000:
-                m1.run(5000, 1)
-                step = 5000
-                step_right = 0
-            # break
-
-        else:
-            m1.run(5000, 1)
-            step += 5000
 
         while True:
             m2.run(5000, 1)
@@ -208,6 +196,19 @@ def main():
             m2.run(5000, -1)
 
             break
+
+        if step > 50000:
+            m1.run(5000, -1)
+            step_right += 5000
+            if step_right > 50000:
+                m1.run(5000, 1)
+                step = 5000
+                step_right = 0
+            # break
+
+        else:
+            m1.run(5000, 1)
+            step += 5000
 
         sleep(10)
 
