@@ -139,7 +139,7 @@ class MotorZ:
         if step > 2147483647:
             raise ValueError("step parameter must be a int integer and between 0~2147483647")
         if direction not in (-1, 1):
-            raise ValueError("The dir can only be 0 or 1, clockwis: 0  anticclockwise: 1")
+            raise ValueError("The dir can only be 0 or 1, clockwise: 0  anticlockwise: 1")
         # deal with direction
         self.run_data[2] = 0x23 if direction == 1 else 0x24
         self.run_data[6] = (0xff000000 & step) >> 24
@@ -174,10 +174,10 @@ def main():
     # cycle times
     m = 0
 
-    with open('z_log.csv', "a+", newline='') as file:
-        csv_file = csv.writer(file)
-        head = ["cycle", "time", "weight", "m-weight"]
-        csv_file.writerow(head)
+    # with open('z_log.csv', "a+", newline='') as file:
+    #     csv_file = csv.writer(file)
+    #     head = ["cycle", "time", "weight", "m-weight"]
+    #     csv_file.writerow(head)
 
     step = 0
     step_right = 0
@@ -216,15 +216,18 @@ def main():
                 break
 
         if step > 30000:
+            print('step_right///////////', step_right)
             m1.run(1000, -1)
             step_right += 1000
             if step_right > 30000:
+                print('recycle.............')
                 m1.run(1000, 1)
                 step = 1000
                 step_right = 0
             # break
 
         else:
+            print('step============', step)
             m1.run(1000, 1)
             step += 1000
 
