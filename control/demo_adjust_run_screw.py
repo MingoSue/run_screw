@@ -201,16 +201,16 @@ def main():
         sleep(2.5)
         while True:
             # reverse
-            can_motors.speed_mode(int(-304*0.6))
+            can_motors.speed_mode(int(-304*0.5))
             sleep(2)
             print('gaga')
-            if total_up < 3000:
+            if total_up < 4500:
                 m2.set_speed_level(5)
                 m2.run(1500, -1)
                 # sleep(1)
                 print('up>>>>>>>>>>')
                 total_up += 1500
-            if total_up >= 3000:
+            if total_up >= 4500:
                 print('total_up...', total_up)
                 total_up = 0
                 can_motors.speed_mode(0)
@@ -221,12 +221,12 @@ def main():
 
         # step_right += 1
         sleep(2)
-        if step >= 4500:
+        if step >= 9000:
             print('step_right///////////', step_right)
             m1.run(4500, -1)
             sleep(2)
             step_right += 4500
-            if step_right >= 4500:
+            if step_right >= 9000:
                 print('recycle.............')
                 while True:
                     m2.run(1000, 1)
@@ -242,16 +242,16 @@ def main():
                 sleep(2.5)
                 while True:
                     # reverse
-                    can_motors.speed_mode(int(-304 * 0.6))
+                    can_motors.speed_mode(int(-304 * 0.5))
                     sleep(2)
                     print('gaga')
-                    if total_up < 3000:
+                    if total_up < 4500:
                         m2.set_speed_level(5)
                         m2.run(1500, -1)
                         # sleep(1)
                         print('up>>>>>>>>>>')
                         total_up += 1500
-                    if total_up >= 3000:
+                    if total_up >= 4500:
                         print('total_up...', total_up)
                         total_up = 0
                         can_motors.speed_mode(0)
