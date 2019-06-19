@@ -27,40 +27,40 @@ class Motor:
         self.now_speed = 0
         self.alive = False
         self.weight = 0
-        self.ser = serial.Serial('/dev/ttyUSB0')
-        self.refresh_run_m()
-
-    def refresh_run_m(self):
-        t = Thread(target=self.refresh_m, name='refresh_can_m')
-        t.setDaemon(True)
-        t.start()
-        print('thread m ok~')
-
-    def refresh_m(self):
-        p = LED(22)
-        while True:
-            self.ser.write([0x02, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
-            sleep(0.05)
-            weight_data = self.ser.read_all()
-            try:
-                weight = round(int('0x' + weight_data.hex()[10:14], 16) * 0.001, 3)
-                if weight >= 10:
-                    weight = 0
-            except Exception as e:
-                print(e)
-                weight = 0
-            print('weight===========', weight)
-            try:
-                if weight > 2:
-                    self.weight = weight
-                    print('zzzzzzzzz> max m : {}'.format(weight))
-                    # protect io
-                    p.on()
-                    print('zzzzzzzzzzz')
-                    sleep(0.1)
-                    p.off()
-            except Exception as e:
-                print(e)
+    #     self.ser = serial.Serial('/dev/ttyUSB0')
+    #     self.refresh_run_m()
+    #
+    # def refresh_run_m(self):
+    #     t = Thread(target=self.refresh_m, name='refresh_can_m')
+    #     t.setDaemon(True)
+    #     t.start()
+    #     print('thread m ok~')
+    #
+    # def refresh_m(self):
+    #     p = LED(22)
+    #     while True:
+    #         self.ser.write([0x02, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
+    #         sleep(0.05)
+    #         weight_data = self.ser.read_all()
+    #         try:
+    #             weight = round(int('0x' + weight_data.hex()[10:14], 16) * 0.001, 3)
+    #             if weight >= 10:
+    #                 weight = 0
+    #         except Exception as e:
+    #             print(e)
+    #             weight = 0
+    #         print('weight===========', weight)
+    #         try:
+    #             if weight > 2:
+    #                 self.weight = weight
+    #                 print('zzzzzzzzz> max m : {}'.format(weight))
+    #                 # protect io
+    #                 p.on()
+    #                 print('zzzzzzzzzzz')
+    #                 sleep(0.1)
+    #                 p.off()
+    #         except Exception as e:
+    #             print(e)
 
     def send(self, aid, data):
         msg = can.Message(arbitration_id=aid, data=data, extended_id=False)
@@ -96,10 +96,12 @@ def main():
     step = 0
 
     while True:
+        print('step==========', step)
         m2.run(1000, 1)
         step += 1000
         if step > 5000:
             break
+        sleep(5)
 
 
 if __name__ == "__main__":
