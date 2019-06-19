@@ -31,9 +31,10 @@ class Motor:
         print('thread  ok~')
 
     def refresh(self):
-        p = LED(22)
+        p = LED(21)
+        p.on()
         while True:
-            self.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
+            self.ser.write([0x32, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
             sleep(0.05)
             weight_data = self.ser.read_all()
             try:
@@ -48,10 +49,11 @@ class Motor:
                     self.weight = weight
                     print('> max n : {}'.format(weight))
                     # protect io
-                    p.on()
+
+                    p.off()
                     print('ppppppppppppp')
                     sleep(0.1)
-                    p.off()
+                    p.on()
             except Exception as e:
                 print(e)
 
@@ -103,7 +105,7 @@ class MotorZ:
         print('thread m ok~')
 
     def refresh_m(self):
-        p = LED(22)
+        p = LED(21)
         while True:
             self.ser.write([0x02, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
             sleep(0.05)

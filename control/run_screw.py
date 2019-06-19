@@ -92,9 +92,10 @@ class Motor:
 
 
     def serial_refresh(self):
-        p = LED(22)
+        p = LED(21)
+        p.on()
         while True:
-            self.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
+            self.ser.write([0x32, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
             sleep(0.1)
             weight_data = self.ser.read_all()
             try:
@@ -102,24 +103,25 @@ class Motor:
                 if weight >=10:
                     weight = 0
             except Exception as e:
-                print(e)
+                #print(e)
                 weight = 0
+            #print(weight)
             try:
                 with open('weight.json', 'w') as f:
                     json.dump({'weight':weight}, f)
             
                 with open('screw_config.json', 'r') as f:
                     config = json.load(f)
- 
+
                 if weight>config['n']:
                     print('> max n : {}'.format(weight))
                     config.update({'power':0})
                     with open('screw_config.json', 'w') as f:
                         json.dump(config,f)
                     # protect io
-                    p.on()
-                    sleep(0.1)
                     p.off()
+                    sleep(0.1)
+                    p.on()
             except Exception as e:
                 print(e)
 
@@ -198,6 +200,7 @@ def main():
         actual_speed = int(304 * speed * direction)
         
         if power:
+            #print('run...')
             # run
             if actual_speed != pre_speed:
                 can_motors.speed_mode(actual_speed)
