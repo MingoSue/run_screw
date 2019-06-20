@@ -45,7 +45,7 @@ class Motor:
                 print(e)
                 weight = 0
             try:
-                if weight > 2:
+                if weight > 1:
                     self.weight = weight
                     print('> max n : {}'.format(weight))
                     # protect io
@@ -185,22 +185,28 @@ def main():
     step_right = 0
     total = 0
     total_up = 0
+
+    p = 0
     while True:
 
         while True:
+            p += 1
             r = 0
             while True:
                 r += 1
-                can_motors.speed_mode(304)
+                can_motors.speed_mode(200)
                 sleep(0.5)
-                if r >= 10:
+                if r >= 5 and p != 1:
+                    break
+                elif r >= 10:
                     break
             while True:
                 print('total]]]]]]]]]]', total)
                 m2.run(200, 1)
                 total += 1
-                if total > 3 and can_motors.weight > 2:
+                if total > 3 and can_motors.weight > 1:
                     can_motors.weight = 0
+                    total = 0
                     sleep(2)
                     break
                 sleep(0.1)
@@ -241,7 +247,7 @@ def main():
                     r = 0
                     while True:
                         r += 1
-                        can_motors.speed_mode(304)
+                        can_motors.speed_mode(200)
                         sleep(0.5)
                         if r >= 5:
                             break
@@ -249,8 +255,9 @@ def main():
                         print('total]]]]]]]]]]', total)
                         m2.run(200, 1)
                         total += 1
-                        if total > 3 and can_motors.weight > 2:
+                        if total > 3 and can_motors.weight > 1:
                             can_motors.weight = 0
+                            total = 0
                             sleep(2)
                             break
                         sleep(0.1)
@@ -288,7 +295,7 @@ def main():
             m1.run(4500, 1)
             step += 1
 
-        sleep(5)
+        sleep(2)
 
 
 if __name__ == "__main__":
