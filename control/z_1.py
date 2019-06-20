@@ -97,11 +97,12 @@ def main():
 
     while True:
         print('step==========', step)
-        m2.run(1000, 1)
-        step += 1000
-        if step > 5000:
+        m2.run(1000, -1)
+        #step += 1000
+        step += 1
+        if step > 10:
             break
-        sleep(5)
+        sleep(0.09)
 
 
 if __name__ == "__main__":
