@@ -187,17 +187,28 @@ def main():
     total_up = 0
     while True:
 
+        m2.set_speed_level(3)
+
         while True:
-            m2.run(1000, 1)
-            total += 1
-            can_motors.speed_mode(int(304*0.8))
-            sleep(0.5)
-            if can_motors.weight > 2:
-                print('=============> max n : {}'.format(can_motors.weight))
-                can_motors.weight = 0
-                print('total-----------', total)
-                sleep(2)
-                break
+            r = 0
+            while True:
+                r += 1
+                can_motors.speed_mode(304)
+                sleep(0.5)
+                if r >= 10:
+                    break
+            while True:
+                print('total]]]]]]]]]]', total)
+                m2.run(200, 1)
+                total += 1
+                if total > 3 and can_motors.weight > 2:
+                    can_motors.weight = 0
+                    sleep(2)
+                    break
+                sleep(0.1)
+            break
+        m2.set_speed_level(1)
+        print('here here...')
         sleep(2.5)
         while True:
             # reverse
@@ -231,17 +242,27 @@ def main():
             step_right += 1
             if step_right >= 2:
                 print('recycle.............')
+                m2.set_speed_level(3)
                 while True:
-                    m2.run(1000, 1)
-                    total += 1
-                    can_motors.speed_mode(int(304 * 0.8))
-                    sleep(0.5)
-                    if can_motors.weight > 2:
-                        print('=============> max n : {}'.format(can_motors.weight))
-                        can_motors.weight = 0
-                        print('total-----------', total)
-                        sleep(2)
-                        break
+                    r = 0
+                    while True:
+                        r += 1
+                        can_motors.speed_mode(304)
+                        sleep(0.5)
+                        if r >= 10:
+                            break
+                    while True:
+                        print('total]]]]]]]]]]', total)
+                        m2.run(200, 1)
+                        total += 1
+                        if total > 3 and can_motors.weight > 2:
+                            can_motors.weight = 0
+                            sleep(2)
+                            break
+                        sleep(0.1)
+                    break
+                m2.set_speed_level(1)
+                print('here here...')
                 sleep(2.5)
                 while True:
                     # reverse
