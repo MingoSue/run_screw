@@ -45,7 +45,7 @@ class Motor:
                 print(e)
                 weight = 0
             try:
-                if weight > 1:
+                if weight > 0.5:
                     self.weight = weight
                     print('> max n : {}'.format(weight))
                     # protect io
@@ -204,7 +204,7 @@ def main():
                 print('total]]]]]]]]]]', total)
                 m2.run(200, 1)
                 total += 1
-                if total > 3 and can_motors.weight > 1:
+                if total > 3 and can_motors.weight > 0.5:
                     can_motors.weight = 0
                     total = 0
                     sleep(2)
@@ -235,10 +235,10 @@ def main():
             sleep(2)
             break
 
-        sleep(2)
+        # sleep(2)
         if step >= 2:
             print('step_right///////////', step_right)
-            m1.run(4500, -1)
+            m1.run(4800, -1)
             sleep(2)
             step_right += 1
             if step_right >= 2:
@@ -255,7 +255,7 @@ def main():
                         print('total]]]]]]]]]]', total)
                         m2.run(200, 1)
                         total += 1
-                        if total > 3 and can_motors.weight > 1:
+                        if total > 3 and can_motors.weight > 0.5:
                             can_motors.weight = 0
                             total = 0
                             sleep(2)
@@ -286,16 +286,16 @@ def main():
                     sleep(2)
                     break
                 sleep(2)
-                m1.run(4500, 1)
+                m1.run(4800, 1)
                 step = 1
                 step_right = 0
 
         else:
             print('step============', step)
-            m1.run(4500, 1)
+            m1.run(4800, 1)
             step += 1
 
-        sleep(2)
+        sleep(1)
 
 
 if __name__ == "__main__":
