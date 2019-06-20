@@ -168,7 +168,7 @@ def main():
     m1 = MotorZ('can0', 0xc1)
     m2 = MotorZ('can0', 0xc2)
     m1.set_speed_level(3)
-    m2.set_speed_level(1)
+    m2.set_speed_level(3)
 
     can_motors = Motor('can0', 0x13)
     n = 0
@@ -186,8 +186,6 @@ def main():
     total = 0
     total_up = 0
     while True:
-
-        m2.set_speed_level(3)
 
         while True:
             r = 0
@@ -207,31 +205,28 @@ def main():
                     break
                 sleep(0.1)
             break
-        m2.set_speed_level(1)
         print('here here...')
         sleep(2.5)
         while True:
             # reverse
-            can_motors.speed_mode(-275)
+            can_motors.speed_mode(-180)
             sleep(0.5)
             print('gaga')
             # 再用一次循环
             while True:
-                if total_up < 5:
-                    m2.run(1000, -1)
+                if total_up < 15:
+                    m2.run(200, -1)
                     sleep(0.1)
-                    print('up>>>>>>>>>>')
+                    print('up>>>>>>>>>>', total_up)
                     total_up += 1
-                if total_up >= 5:
+                if total_up >= 15:
                     break
             sleep(0.8)
             print('total_up...', total_up)
             total_up = 0
             can_motors.speed_mode(0)
-            m2.set_speed_level(2)
-            m2.run(5000, -1)
+            m2.run(3000, -1)
             sleep(2)
-            m2.set_speed_level(1)
             break
 
         sleep(2)
@@ -242,14 +237,13 @@ def main():
             step_right += 1
             if step_right >= 2:
                 print('recycle.............')
-                m2.set_speed_level(3)
                 while True:
                     r = 0
                     while True:
                         r += 1
                         can_motors.speed_mode(304)
                         sleep(0.5)
-                        if r >= 10:
+                        if r >= 5:
                             break
                     while True:
                         print('total]]]]]]]]]]', total)
@@ -261,31 +255,28 @@ def main():
                             break
                         sleep(0.1)
                     break
-                m2.set_speed_level(1)
                 print('here here...')
                 sleep(2.5)
                 while True:
                     # reverse
-                    can_motors.speed_mode(-275)
+                    can_motors.speed_mode(-180)
                     sleep(0.5)
                     print('gaga')
                     # 再用一次循环
                     while True:
-                        if total_up < 5:
-                            m2.run(1000, -1)
+                        if total_up < 15:
+                            m2.run(200, -1)
                             sleep(0.1)
-                            print('up>>>>>>>>>>')
+                            print('up>>>>>>>>>>', total_up)
                             total_up += 1
-                        if total_up >= 5:
+                        if total_up >= 15:
                             break
                     sleep(0.8)
                     print('total_up...', total_up)
                     total_up = 0
                     can_motors.speed_mode(0)
-                    m2.set_speed_level(2)
-                    m2.run(5000, -1)
+                    m2.run(3000, -1)
                     sleep(2)
-                    m2.set_speed_level(1)
                     break
                 sleep(2)
                 m1.run(4500, 1)
