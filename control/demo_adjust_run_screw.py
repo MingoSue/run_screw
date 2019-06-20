@@ -189,7 +189,7 @@ def main():
 
         while True:
             m2.run(1000, 1)
-            total += 1000
+            total += 1
             can_motors.speed_mode(int(304*0.8))
             sleep(0.5)
             if can_motors.weight > 2:
@@ -223,7 +223,6 @@ def main():
             m2.set_speed_level(1)
             break
 
-        # step_right += 1
         sleep(2)
         if step >= 2:
             print('step_right///////////', step_right)
@@ -234,7 +233,7 @@ def main():
                 print('recycle.............')
                 while True:
                     m2.run(1000, 1)
-                    total += 1000
+                    total += 1
                     can_motors.speed_mode(int(304 * 0.8))
                     sleep(0.5)
                     if can_motors.weight > 2:
