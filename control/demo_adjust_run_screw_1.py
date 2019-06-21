@@ -19,6 +19,10 @@ class Motor:
         """
         self.bus = can.interface.Bus(
             channel=can_channel, bustype='socketcan_ctypes')
+        self.speed = 0
+        self.now_speed = 0
+        self.position = 0
+        self.current = 0
         self.motor_id = motor_id
         self.weight = 0
         self.ser = serial.Serial('/dev/ttyUSB0')
@@ -120,9 +124,10 @@ class Motor:
             self.current = data[0] | (data[1] << 8)
             self.position = data[4] | (data[5] << 8) | (data[6] << 16) | (data[7] << 24)
             # print(self.current, self.now_speed, self.position)
-            self.direction = 1 if self.now_speed > 0 else -1
+            direction = 1 if self.now_speed > 0 else -1
             # sleep(0.1)
-            screw_data = {'speed': self.now_speed, 'current': self.current if self.current < 10000 else 0, 'direction': self.direction}
+            screw_data = {'speed': self.now_speed, 'current': self.current if self.current < 10000 else 0,
+                          'direction': direction}
             with open('screw.json', 'w') as f:
                 json.dump(screw_data, f)
             sleep(0.001)
@@ -240,113 +245,128 @@ def main():
     p = 0
     while True:
 
-        while True:
-            p += 1
-            r = 0
-            while True:
-                r += 1
-                can_motors.speed_mode(200)
-                sleep(0.5)
-                if r >= 5 and p != 1:
-                    break
-                elif r >= 10:
-                    break
-            while True:
-                print('total]]]]]]]]]]', total)
-                m2.run(200, 1)
-                total += 1
-                if total > 3 and can_motors.weight > 0.5:
-                    can_motors.weight = 0
-                    total = 0
-                    sleep(2)
-                    break
-                sleep(0.1)
-            break
-        print('here here...')
-        sleep(2.5)
-        while True:
-            # reverse
-            can_motors.speed_mode(-180)
-            sleep(0.5)
-            print('gaga')
-            # 再用一次循环
-            while True:
-                if total_up < 15:
-                    m2.run(200, -1)
-                    sleep(0.1)
-                    print('up>>>>>>>>>>', total_up)
-                    total_up += 1
-                if total_up >= 15:
-                    break
-            sleep(0.8)
-            print('total_up...', total_up)
-            total_up = 0
-            can_motors.speed_mode(0)
-            m2.run(3000, -1)
-            sleep(2)
-            break
+        try:
+            with open('screw_config.json', 'r') as f:
+                config = json.load(f)
+        except:
+            continue
+        # power 1 :on  0:off
+        power = config['power']
+        # direction 1 , -1
+        weight = config['n']
 
-        # sleep(2)
-        if step >= 2:
-            print('step_right///////////', step_right)
-            m1.run(4800, -1)
-            sleep(2)
-            step_right += 1
-            if step_right >= 2:
-                print('recycle.............')
+        if power == 1:
+
+            while True:
+                p += 1
+                r = 0
                 while True:
-                    r = 0
-                    while True:
-                        r += 1
-                        can_motors.speed_mode(200)
-                        sleep(0.5)
-                        if r >= 5:
-                            break
-                    while True:
-                        print('total]]]]]]]]]]', total)
-                        m2.run(200, 1)
-                        total += 1
-                        if total > 3 and can_motors.weight > 0.5:
-                            can_motors.weight = 0
-                            total = 0
-                            sleep(2)
-                            break
-                        sleep(0.1)
-                    break
-                print('here here...')
-                sleep(2.5)
-                while True:
-                    # reverse
-                    can_motors.speed_mode(-180)
+                    r += 1
+                    can_motors.speed_mode(200)
                     sleep(0.5)
-                    print('gaga')
-                    # 再用一次循环
-                    while True:
-                        if total_up < 15:
-                            m2.run(200, -1)
-                            sleep(0.1)
-                            print('up>>>>>>>>>>', total_up)
-                            total_up += 1
-                        if total_up >= 15:
-                            break
-                    sleep(0.8)
-                    print('total_up...', total_up)
-                    total_up = 0
-                    can_motors.speed_mode(0)
-                    m2.run(3000, -1)
-                    sleep(2)
-                    break
+                    if r >= 5 and p != 1:
+                        break
+                    elif r >= 10:
+                        break
+                while True:
+                    print('total]]]]]]]]]]', total)
+                    m2.run(200, 1)
+                    total += 1
+                    if total > 3 and can_motors.weight > weight:
+                        can_motors.weight = 0
+                        total = 0
+                        sleep(2)
+                        break
+                    sleep(0.1)
+                break
+            print('here here...')
+            sleep(2.5)
+            while True:
+                # reverse
+                can_motors.speed_mode(-180)
+                sleep(0.5)
+                print('gaga')
+                # 再用一次循环
+                while True:
+                    if total_up < 15:
+                        m2.run(200, -1)
+                        sleep(0.1)
+                        print('up>>>>>>>>>>', total_up)
+                        total_up += 1
+                    if total_up >= 15:
+                        break
+                sleep(0.8)
+                print('total_up...', total_up)
+                total_up = 0
+                can_motors.speed_mode(0)
+                m2.run(3000, -1)
                 sleep(2)
+                break
+
+            # sleep(2)
+            if step >= 2:
+                print('step_right///////////', step_right)
+                m1.run(4800, -1)
+                sleep(2)
+                step_right += 1
+                if step_right >= 2:
+                    print('recycle.............')
+                    while True:
+                        r = 0
+                        while True:
+                            r += 1
+                            can_motors.speed_mode(200)
+                            sleep(0.5)
+                            if r >= 5:
+                                break
+                        while True:
+                            print('total]]]]]]]]]]', total)
+                            m2.run(200, 1)
+                            total += 1
+                            if total > 3 and can_motors.weight > weight:
+                                can_motors.weight = 0
+                                total = 0
+                                sleep(2)
+                                break
+                            sleep(0.1)
+                        break
+                    print('here here...')
+                    sleep(2.5)
+                    while True:
+                        # reverse
+                        can_motors.speed_mode(-180)
+                        sleep(0.5)
+                        print('gaga')
+                        # 再用一次循环
+                        while True:
+                            if total_up < 15:
+                                m2.run(200, -1)
+                                sleep(0.1)
+                                print('up>>>>>>>>>>', total_up)
+                                total_up += 1
+                            if total_up >= 15:
+                                break
+                        sleep(0.8)
+                        print('total_up...', total_up)
+                        total_up = 0
+                        can_motors.speed_mode(0)
+                        m2.run(3000, -1)
+                        sleep(2)
+                        break
+                    sleep(2)
+                    m1.run(4800, 1)
+                    step = 1
+                    step_right = 0
+
+            else:
+                print('step============', step)
                 m1.run(4800, 1)
-                step = 1
-                step_right = 0
+                step += 1
+
+            sleep(1)
 
         else:
-            print('step============', step)
-            m1.run(4800, 1)
-            step += 1
-
-        sleep(1)
+            print('stand by...')
 
 
 if __name__ == "__main__":
