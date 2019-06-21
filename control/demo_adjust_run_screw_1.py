@@ -25,7 +25,7 @@ class Motor:
         self.current = 0
         self.motor_id = motor_id
         self.weight = 0
-        self.ser = serial.Serial('/dev/ttyUSB0')
+        self.ser = serial.Serial('/dev/ttyUSB1')
         self.refresh_run()
 
     def refresh_run(self):
@@ -252,7 +252,6 @@ def main():
             continue
         # power 1 :on  0:off
         power = config['power']
-        # direction 1 , -1
         weight = config['n']
 
         if power == 1:
@@ -367,6 +366,7 @@ def main():
 
         else:
             print('stand by...')
+        sleep(0.5)
 
 
 if __name__ == "__main__":
