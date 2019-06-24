@@ -1,4 +1,6 @@
 import os
+import pytz
+import sys
 import json
 import csv
 import serial
@@ -7,6 +9,36 @@ import can
 from threading import Thread
 from gpiozero import LED, DigitalInputDevice
 import time
+
+import django
+from django.utils import timezone
+from django.db.models import Avg
+
+sys.path.append('..')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ScrewDriver.settings")
+
+django.setup()
+
+from control.models import Records, ScrewConfig, Weight
+
+
+def get_current_time(datetimenow=None, naive_datetime=False, customtimezone=None):
+    timezone_datetime = datetimenow
+    if datetimenow and not datetimenow.tzinfo:
+        # change naive datetime to datetime with timezone
+        # use timezone.localize will include day light saving to get more accurate timing
+        timezone_datetime = pytz.timezone(os.environ.get('TZ')).localize(datetimenow)
+    tz = None
+    if customtimezone:
+        try:
+            tz = pytz.timezone(customtimezone)
+        except:
+            pass
+
+    # convert to datetime with user local timezone
+    converted_datetime = timezone.localtime(timezone_datetime or timezone.now(), tz)
+    # return datetime converted
+    return converted_datetime.replace(tzinfo=None) if naive_datetime else converted_datetime
 
 
 class Motor:
@@ -69,8 +101,8 @@ class Motor:
                 poweron_n()
             elif not any([bin_now, bout_now]) and any([bin_pre, bout_pre]):
                 sleep(0.1)
-                print('poweroff')
-                poweroff()
+                print('poweroff...')
+                # poweroff()
             else:
                 pass
             bin_pre = bin_now
@@ -263,6 +295,14 @@ def main():
                     r += 1
                     can_motors.speed_mode(200)
                     sleep(0.5)
+
+                    record = Records()
+                    record.speed = 200
+                    record.direction = 1
+                    record.current = can_motors.current if can_motors.current < 10000 else 0
+                    record.config_weight = weight
+                    record.start_time = get_current_time()
+
                     if r >= 5 and p != 1:
                         break
                     elif r >= 10:
@@ -272,6 +312,17 @@ def main():
                     m2.run(200, 1)
                     total += 1
                     if total > 3 and can_motors.weight > weight:
+                        print('mmmmmmmmmmmmm', m)
+                        m += 1
+                        n = 0
+
+                        record.cycle = m
+                        record.weight = can_motors.weight
+                        record.d_weight = can_motors.weight - weight
+                        record.end_time = get_current_time()
+                        record.total_time = (record.end_time - record.start_time).seconds
+                        record.save()
+
                         can_motors.weight = 0
                         total = 0
                         sleep(2)
@@ -284,6 +335,15 @@ def main():
                 # reverse
                 can_motors.speed_mode(-180)
                 sleep(0.5)
+
+                record = Records()
+                record.cycle = m
+                record.speed = -180
+                record.direction = -1
+                record.current = can_motors.current if can_motors.current < 10000 else 0
+                record.weight = can_motors.weight
+                record.save()
+
                 print('gaga')
                 # 再用一次循环
                 while True:
@@ -316,6 +376,14 @@ def main():
                             r += 1
                             can_motors.speed_mode(200)
                             sleep(0.5)
+
+                            record = Records()
+                            record.speed = 200
+                            record.direction = 1
+                            record.current = can_motors.current if can_motors.current < 10000 else 0
+                            record.config_weight = weight
+                            record.start_time = get_current_time()
+
                             if r >= 5:
                                 break
                         while True:
@@ -323,6 +391,17 @@ def main():
                             m2.run(200, 1)
                             total += 1
                             if total > 3 and can_motors.weight > weight:
+                                print('mmmmmmmmmmmmm22222222', m)
+                                m += 1
+                                n = 0
+
+                                record.cycle = m
+                                record.weight = can_motors.weight
+                                record.d_weight = can_motors.weight - weight
+                                record.end_time = get_current_time()
+                                record.total_time = (record.end_time - record.start_time).seconds
+                                record.save()
+
                                 can_motors.weight = 0
                                 total = 0
                                 sleep(2)
@@ -335,6 +414,15 @@ def main():
                         # reverse
                         can_motors.speed_mode(-180)
                         sleep(0.5)
+
+                        record = Records()
+                        record.cycle = m
+                        record.speed = -180
+                        record.direction = -1
+                        record.current = can_motors.current if can_motors.current < 10000 else 0
+                        record.weight = can_motors.weight
+                        record.save()
+
                         print('gaga')
                         # 再用一次循环
                         while True:
@@ -366,7 +454,7 @@ def main():
 
         else:
             print('stand by...')
-        sleep(0.5)
+        sleep(1)
 
 
 if __name__ == "__main__":
