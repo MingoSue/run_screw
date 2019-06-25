@@ -57,7 +57,7 @@ class Motor:
         self.current = 0
         self.motor_id = motor_id
         self.weight = 0
-        self.ser = serial.Serial('/dev/ttyUSB1')
+        self.ser = serial.Serial('/dev/ttyUSB1', baudrate=57600)
         self.refresh_run()
 
     def refresh_run(self):
@@ -480,7 +480,7 @@ def main():
 
             # 手动
             else:
-                if position == 1 and man_cycle == 0:
+                if position == 1 and man_cycle != 1:
                     if man_position == 4800:
                         m1.run(4800, -1)
                         man_position -= 4800
@@ -562,7 +562,7 @@ def main():
                         sleep(2)
                         break
                     man_cycle = 1
-                if position == 2 and man_cycle == 0:
+                if position == 2 and man_cycle != 2:
                     if man_position == 0:
                         m1.run(4800, 1)
                         man_position += 4800
@@ -643,8 +643,8 @@ def main():
                         m2.run(3000, -1)
                         sleep(2)
                         break
-                    man_cycle = 1
-                if position == 3 and man_cycle == 0:
+                    man_cycle = 2
+                if position == 3 and man_cycle != 3:
                     if man_position == 0:
                         m1.run(9600, 1)
                         man_position += 9600
@@ -725,7 +725,7 @@ def main():
                         m2.run(3000, -1)
                         sleep(2)
                         break
-                    man_cycle = 1
+                    man_cycle = 3
 
         else:
             print('stand by...')
