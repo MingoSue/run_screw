@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from .views import ScrewDataView,ScrewConfigView,HelloView
+from .views import ScrewDataView,ScrewConfigView,HelloView, AdjustScrewConfigView
 
 # router = DefaultRouter()
 # router.register(r'mouseinfo', MouseInfoViewSet)
@@ -11,4 +11,5 @@ urlpatterns = [
     path('screw', ScrewDataView.as_view()),
     path('screwconfig', ScrewConfigView.as_view()),
     path('hello', HelloView.as_view()),
+    path('adjust', AdjustScrewConfigView.as_view()),
 ]
