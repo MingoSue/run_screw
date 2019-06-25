@@ -127,7 +127,7 @@ class Motor:
                 with open('weight.json', 'w') as f:
                     json.dump({'weight': weight}, f)
 
-                with open('screw_config.json', 'r') as f:
+                with open('adjust_screw_config.json', 'r') as f:
                     config = json.load(f)
 
                 if weight > config['n']:
@@ -182,26 +182,26 @@ class Motor:
 
 
 def poweron_p():
-    with open('screw_config.json', 'r') as f:
+    with open('adjust_screw_config.json', 'r') as f:
         config = json.load(f)
     config.update({'power': 1, "direction": 1})
-    with open('screw_config.json', 'w') as f:
+    with open('adjust_screw_config.json', 'w') as f:
         json.dump(config, f)
 
 
 def poweron_n():
-    with open('screw_config.json', 'r') as f:
+    with open('adjust_screw_config.json', 'r') as f:
         config = json.load(f)
     config.update({'power': 1, "direction": -1})
-    with open('screw_config.json', 'w') as f:
+    with open('adjust_screw_config.json', 'w') as f:
         json.dump(config, f)
 
 
 def poweroff():
-    with open('screw_config.json', 'r') as f:
+    with open('adjust_screw_config.json', 'r') as f:
         config = json.load(f)
     config.update({'power': 0})
-    with open('screw_config.json', 'w') as f:
+    with open('adjust_screw_config.json', 'w') as f:
         json.dump(config, f)
 
 
@@ -382,7 +382,7 @@ def main():
                     if step_right >= 2:
                         print('recycle.............')
                         try:
-                            with open('screw_config.json', 'r') as f:
+                            with open('adjust_screw_config.json', 'r') as f:
                                 config = json.load(f)
                         except:
                             continue
