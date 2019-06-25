@@ -314,12 +314,12 @@ def main():
     man_cycle = 0
     while True:
 
-        try:
-            with open('adjust_screw_config.json', 'r') as f:
-                config = json.load(f)
-        except Exception as e:
-            print('config error', e)
-            config = {"speed": 0.2, "direction": 1, "n": 2, "power": 1, "auto": 1, "position": 0}
+        # try:
+        #     with open('adjust_screw_config.json', 'r') as f:
+        #         config = json.load(f)
+        # except Exception as e:
+        #     print('config error', e)
+        config = {"speed": 0.2, "direction": 1, "n": 0.5, "power": 1, "auto": 1, "position": 0}
         # power 1 :on  0:off
         power = config['power']
         weight = config['n']
