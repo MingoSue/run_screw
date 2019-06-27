@@ -97,10 +97,10 @@ def main():
 
     while True:
         print('step==========', step)
-        m2.run(1000, -1)
+        m2.run(700, -1)
         #step += 1000
         step += 1
-        if step > 10:
+        if step >= 5:
             break
         sleep(0.09)
 
