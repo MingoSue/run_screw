@@ -282,6 +282,7 @@ def main():
     a_position = 1
     a_cycle = 1
     while True:
+        print('a_cyclea_cyclea_cycle', a_cycle)
 
         try:
             with open('adjust_screw_config.json', 'r') as f:
@@ -497,6 +498,13 @@ def main():
 
             # 手动
             else:
+                if a_cycle == 2:
+                    m1.run(4800, -1)
+                    a_cycle = 1
+                elif a_cycle == 3:
+                    m1.run(9600, -1)
+                    a_cycle = 1
+                sleep(1)
                 if position == 1 and man_cycle != 1:
                     if man_position == 4800:
                         m1.run(4800, -1)
