@@ -93,7 +93,8 @@ DATABASES = {
         'NAME': 'screw',
         'USER': 'root',
         'PASSWORD': 'mingo',
-        # 'HOST': '192.168.122.123',
+        # 'PASSWORD': 'amax',
+        # 'HOST': '192.168.122.97',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }

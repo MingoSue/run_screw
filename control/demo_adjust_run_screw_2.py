@@ -57,6 +57,7 @@ class Motor:
         self.current = 0
         self.motor_id = motor_id
         self.weight = 0
+        self.weight_m = 0
         self.ser = serial.Serial('/dev/ttyUSB1', baudrate=57600)
         self.refresh_run()
 
@@ -121,7 +122,7 @@ class Motor:
                 if weight >= 10:
                     weight = 0
             except Exception as e:
-                print(e)
+                print('error111111111111', e)
                 weight = 0
             try:
                 with open('weight.json', 'w') as f:
@@ -132,13 +133,35 @@ class Motor:
 
                 if weight > config['n']:
                     self.weight = weight
-                    print('> max n : {}'.format(weight))
+                    print('ssssssssssss> max n : {}'.format(weight))
                     # protect io
 
                     p.off()
                     print('ppppppppppppp')
                     sleep(0.1)
                     p.on()
+            except Exception as e:
+                print('errorrrrrrrrrr', e)
+
+            self.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
+            sleep(0.05)
+            weight_data_m = self.ser.read_all()
+            try:
+                weight_m = round(int('0x' + weight_data_m.hex()[10:14], 16) * 0.01, 3)
+                if weight_m >= 10:
+                    weight_m = 0
+            except Exception as e:
+                print('error2222222222', e)
+                weight_m = 0
+            try:
+                if weight_m > 1:
+                    self.weight_m = weight_m
+                    print('mmmmmmmmmmmmmm> max m : {}'.format(weight_m))
+                    # protect io
+                    # p.off()
+                    # print('zzzzzzzzzzz')
+                    # sleep(0.1)
+                    # p.on()
             except Exception as e:
                 print(e)
 
@@ -225,41 +248,41 @@ class MotorZ:
         self.speed = 0
         self.now_speed = 0
         self.alive = False
-        self.weight = 0
-        self.ser = serial.Serial('/dev/ttyUSB1', baudrate=57600)
-        self.refresh_run_m()
+        # self.weight = 0
+    #     self.ser = serial.Serial('/dev/ttyUSB1', baudrate=57600)
+    #     self.refresh_run_m()
+    #
+    # def refresh_run_m(self):
+    #     t = Thread(target=self.refresh_m, name='refresh_can_m')
+    #     t.setDaemon(True)
+    #     t.start()
+    #     print('thread m ok~')
 
-    def refresh_run_m(self):
-        t = Thread(target=self.refresh_m, name='refresh_can_m')
-        t.setDaemon(True)
-        t.start()
-        print('thread m ok~')
-
-    def refresh_m(self):
-        p = LED(21)
-        p.on()
-        while True:
-            self.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
-            sleep(0.05)
-            weight_data = self.ser.read_all()
-            try:
-                weight = round(int('0x' + weight_data.hex()[10:14], 16) * 0.01, 3)
-                if weight >= 10:
-                    weight = 0
-            except Exception as e:
-                print(e)
-                weight = 0
-            try:
-                if weight > 1:
-                    self.weight = weight
-                    print('zzzzzzzzz> max m : {}'.format(weight))
-                    # protect io
-                    p.off()
-                    print('zzzzzzzzzzz')
-                    sleep(0.1)
-                    p.on()
-            except Exception as e:
-                print(e)
+    # def refresh_m(self):
+    #     # p = LED(21)
+    #     # p.on()
+    #     while True:
+    #         self.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
+    #         sleep(0.05)
+    #         weight_data = self.ser.read_all()
+    #         try:
+    #             weight = round(int('0x' + weight_data.hex()[10:14], 16) * 0.01, 3)
+    #             if weight >= 10:
+    #                 weight = 0
+    #         except Exception as e:
+    #             print(e)
+    #             weight = 0
+    #         try:
+    #             if weight > 1:
+    #                 self.weight = weight
+    #                 print('zzzzzzzzz> max m : {}'.format(weight))
+    #                 # protect io
+    #                 # p.off()
+    #                 # print('zzzzzzzzzzz')
+    #                 # sleep(0.1)
+    #                 # p.on()
+    #         except Exception as e:
+    #             print(e)
 
     def send(self, aid, data):
         msg = can.Message(arbitration_id=aid, data=data, extended_id=False)
@@ -334,13 +357,24 @@ def main():
 
             if auto == 1:
                 while True:
+                    # can_motors.speed_mode(200)
                     print('total]]]]]]]]]]', total)
                     m2.run(200, 1)
+                    sleep(0.1)
                     total += 1
-                    if m2.weight > 1:
+                    print('can_motors.weight_mmmmmmmmmmmm', can_motors.weight_m)
+                    if can_motors.weight_m > 1:
+                        print('start..')
+                        sleep(1)
                         while True:
-                            can_motors.speed_mode(200)
-                            sleep(0.5)
+                            q = 0
+                            while True:
+                                print('qqqqqqqqqqqq', q)
+                                q += 1
+                                can_motors.speed_mode(200)
+                                sleep(0.5)
+                                if q > 10:
+                                    break
                             if can_motors.weight > weight:
                                 print('=============> max n : {}'.format(can_motors.weight))
                                 can_motors.weight = 0
@@ -349,24 +383,24 @@ def main():
                                 m2.run(200, 1)
                                 total += 1
                                 sleep(0.1)
-                        m2.weight = 0
+                        can_motors.weight_m = 0
                         break
-                    sleep(0.1)
+                    # sleep(0.1)
                 print('here here...')
                 sleep(2)
                 while True:
                     # reverse
                     can_motors.speed_mode(-180)
                     sleep(0.5)
-                    print('gaga')
-                    if m2.weight > 1 and total_up < total:
-                        m2.weight = 0
+                    print('gagammmmmmmm')
+                    if can_motors.weight_m > 1 and total_up < total:
+                        can_motors.weight_m = 0
                         m2.run(200, -1)
                         total_up += 1
                         sleep(0.1)
                     if total_up >= total:
                         can_motors.speed_mode(0)
-                        m2.weight = 0
+                        can_motors.weight_m = 0
                         break
 
                 if step >= 2:
@@ -393,7 +427,7 @@ def main():
                                 print('total]]]]]]]]]]', total)
                                 m2.run(200, 1)
                                 total += 1
-                                if m2.weight > 1:
+                                if can_motors.weight_m > 1:
                                     while True:
                                         can_motors.speed_mode(200)
                                         sleep(0.5)
@@ -405,7 +439,7 @@ def main():
                                             m2.run(200, 1)
                                             total += 1
                                             sleep(0.1)
-                                    m2.weight = 0
+                                    can_motors.weight_m = 0
                                     break
                                 sleep(0.1)
                             print('here here...')
@@ -415,14 +449,14 @@ def main():
                                 can_motors.speed_mode(-180)
                                 sleep(0.5)
                                 print('gaga')
-                                if m2.weight > 1 and total_up < total:
-                                    m2.weight = 0
+                                if can_motors.weight_m > 1 and total_up < total:
+                                    can_motors.weight_m = 0
                                     m2.run(200, -1)
                                     total_up += 1
                                     sleep(0.1)
                                 if total_up >= total:
                                     can_motors.speed_mode(0)
-                                    m2.weight = 0
+                                    can_motors.weight_m = 0
                                     break
                         else:
                             print('stand by...222222')
