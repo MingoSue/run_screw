@@ -1,3 +1,4 @@
+# 自循环第二版（无xz轴），对接ui，记录数据
 import os
 import sys
 import json
