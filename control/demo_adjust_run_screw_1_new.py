@@ -380,119 +380,145 @@ def main():
                 # sleep(2)
                 if step >= 2:
                     print('step_right///////////', step_right)
-                    m1.run(4800, -1)
-                    sleep(2)
-                    step_right += 1
-                    if a_cycle == 3:
-                        a_cycle = 2
-                    elif a_cycle == 2:
-                        a_cycle = 1
-                    if step_right >= 2:
-                        print('recycle.............')
-                        try:
-                            with open('adjust_screw_config.json', 'r') as f:
-                                config = json.load(f)
-                        except:
-                            continue
-                        # power 1 :on  0:off
-                        power = config['power']
-                        weight = config['n']
+                    try:
+                        with open('adjust_screw_config.json', 'r') as f:
+                            config = json.load(f)
+                    except:
+                        continue
+                    # power 1 :on  0:off
+                    power = config['power']
+                    if power == 1:
+                        m1.run(4800, -1)
+                        sleep(2)
+                        step_right += 1
+                        if a_cycle == 3:
+                            a_cycle = 2
+                        elif a_cycle == 2:
+                            a_cycle = 1
+                        if step_right >= 2:
+                            print('recycle.............')
+                            try:
+                                with open('adjust_screw_config.json', 'r') as f:
+                                    config = json.load(f)
+                            except:
+                                continue
+                            # power 1 :on  0:off
+                            power = config['power']
+                            weight = config['n']
 
-                        i += 1
-                        print('iiiiiiiii', i)
+                            i += 1
+                            print('iiiiiiiii', i)
 
-                        if power == 1:
-                            while True:
-                                r = 0
+                            if power == 1:
                                 while True:
-                                    r += 1
-                                    can_motors.speed_mode(200)
+                                    r = 0
+                                    while True:
+                                        r += 1
+                                        can_motors.speed_mode(200)
+                                        sleep(0.5)
+
+                                        record = Records()
+                                        record.speed = 200
+                                        record.direction = 1
+                                        record.current = can_motors.current if can_motors.current < 10000 else 0
+                                        record.config_weight = weight
+                                        record.start_time = get_current_time()
+
+                                        if r >= 5:
+                                            break
+                                    while True:
+                                        print('total]]]]]]]]]]', total)
+                                        m2.run(200, 1)
+                                        total += 1
+                                        if total > 3 and can_motors.weight > weight:
+                                            print('mmmmmmmmmmmmm22222222', m)
+                                            m += 1
+                                            n = 0
+
+                                            record.cycle = m
+                                            record.weight = can_motors.weight
+                                            record.d_weight = can_motors.weight - weight
+                                            record.end_time = get_current_time()
+                                            record.total_time = (record.end_time - record.start_time).seconds
+                                            record.save()
+
+                                            can_motors.weight = 0
+                                            total = 0
+                                            sleep(2)
+                                            break
+                                        sleep(0.1)
+                                    break
+                                print('here here...')
+                                sleep(2.5)
+                                while True:
+                                    # reverse
+                                    can_motors.speed_mode(-180)
                                     sleep(0.5)
 
                                     record = Records()
-                                    record.speed = 200
-                                    record.direction = 1
+                                    record.cycle = m
+                                    record.speed = -180
+                                    record.direction = -1
                                     record.current = can_motors.current if can_motors.current < 10000 else 0
-                                    record.config_weight = weight
-                                    record.start_time = get_current_time()
+                                    record.weight = can_motors.weight
+                                    record.save()
 
-                                    if r >= 5:
-                                        break
-                                while True:
-                                    print('total]]]]]]]]]]', total)
-                                    m2.run(200, 1)
-                                    total += 1
-                                    if total > 3 and can_motors.weight > weight:
-                                        print('mmmmmmmmmmmmm22222222', m)
-                                        m += 1
-                                        n = 0
-
-                                        record.cycle = m
-                                        record.weight = can_motors.weight
-                                        record.d_weight = can_motors.weight - weight
-                                        record.end_time = get_current_time()
-                                        record.total_time = (record.end_time - record.start_time).seconds
-                                        record.save()
-
-                                        can_motors.weight = 0
-                                        total = 0
-                                        sleep(2)
-                                        break
-                                    sleep(0.1)
-                                break
-                            print('here here...')
-                            sleep(2.5)
-                            while True:
-                                # reverse
-                                can_motors.speed_mode(-180)
-                                sleep(0.5)
-
-                                record = Records()
-                                record.cycle = m
-                                record.speed = -180
-                                record.direction = -1
-                                record.current = can_motors.current if can_motors.current < 10000 else 0
-                                record.weight = can_motors.weight
-                                record.save()
-
-                                print('gaga')
-                                # 再用一次循环
-                                while True:
-                                    if total_up < 15:
-                                        m2.run(200, -1)
-                                        sleep(0.1)
-                                        print('up>>>>>>>>>>', total_up)
-                                        total_up += 1
-                                    if total_up >= 15:
-                                        break
-                                sleep(0.8)
-                                print('total_up...', total_up)
-                                total_up = 0
-                                can_motors.speed_mode(0)
-                                m2.run(3000, -1)
+                                    print('gaga')
+                                    # 再用一次循环
+                                    while True:
+                                        if total_up < 15:
+                                            m2.run(200, -1)
+                                            sleep(0.1)
+                                            print('up>>>>>>>>>>', total_up)
+                                            total_up += 1
+                                        if total_up >= 15:
+                                            break
+                                    sleep(0.8)
+                                    print('total_up...', total_up)
+                                    total_up = 0
+                                    can_motors.speed_mode(0)
+                                    m2.run(3000, -1)
+                                    sleep(2)
+                                    break
                                 sleep(2)
-                                break
-                            sleep(2)
-                            m1.run(4800, 1)
-                            step = 1
-                            step_right = 0
-                            if a_cycle == 1:
-                                a_cycle = 2
-                        else:
-                            print('stand by...222222')
+                                try:
+                                    with open('adjust_screw_config.json', 'r') as f:
+                                        config = json.load(f)
+                                except:
+                                    continue
+                                # power 1 :on  0:off
+                                power = config['power']
+                                if power == 1:
+                                    m1.run(4800, 1)
+                                    step = 1
+                                    step_right = 0
+                                    if a_cycle == 1:
+                                        a_cycle = 2
+                                else:
+                                    print('stand by...11111')
+                            else:
+                                print('stand by...222222')
+                    else:
+                        print('stand by')
 
                 else:
-                    print('step============', step)
-                    m1.run(4800, 1)
-                    step += 1
-                    if a_cycle == 1:
-                        a_cycle = 2
-                    elif a_cycle == 2:
-                        a_cycle = 3
-                    # elif a_cycle == 3:
-                    #     a_cycle = 1
-                    # else:
-                    #     a_cycle = 2
+                    try:
+                        with open('adjust_screw_config.json', 'r') as f:
+                            config = json.load(f)
+                    except:
+                        continue
+                    # power 1 :on  0:off
+                    power = config['power']
+
+                    if power == 1:
+                        m1.run(4800, 1)
+                        step += 1
+                        if a_cycle == 1:
+                            a_cycle = 2
+                        elif a_cycle == 2:
+                            a_cycle = 3
+                    else:
+                        print('stand byyyy')
 
                 sleep(0.5)
 
