@@ -381,6 +381,7 @@ def main():
                                 can_motors.weight = 0
                                 break
                             else:
+                                print('continue...')
                                 m2.run(200, 1)
                                 total += 1
                                 sleep(0.1)
