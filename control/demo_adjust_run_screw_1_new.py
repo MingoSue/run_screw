@@ -484,7 +484,7 @@ def main():
                                     m2.run(3000, -1)
                                     sleep(2)
                                     break
-                                sleep(2)
+                                # sleep(2)
                                 try:
                                     with open('adjust_screw_config.json', 'r') as f:
                                         config = json.load(f)
