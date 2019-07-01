@@ -68,6 +68,7 @@ class Motor:
         sleep(0.01)
 
     def speed_mode(self, speed):
+        # speed > 0 forward, speed < 0 backward, speed = 0 stop
         self.run_data[2] = 0x23 if speed > 0 else 0x24
         if speed > 0:
             speed -= 1
@@ -86,11 +87,12 @@ class Motor:
 
 
 def main():
-    m2 = Motor('can0', 0xc2)
+    m2 = Motor('can0', 0xc1)
 
-    # run
-    m2.speed_mode(1)
-    sleep(2)
+    # run(only 2 and 3 can)
+    m2.speed_mode(-3)
+    print('run...')
+    sleep(5)
     m2.speed_mode(0)
 
 
