@@ -169,6 +169,7 @@ class Motor:
             try:
                 weight_m = round(int('0x' + weight_data_m.hex()[10:14], 16) * 0.01, 3)
                 if weight_m >= 10:
+                    print('////////////>>>', weight_m)
                     weight_m = 0
             except Exception as e:
                 print('error2222222222', e)
@@ -387,7 +388,7 @@ def main():
             if auto == 1:
 
                 while True:
-                    m2.speed_mode(3)
+                    m2.speed_mode(2)
                     sleep(0.1)
                     print('can_motors.weight_m===========', can_motors.weight_m)
                     print('can_motors.right_limit///////////', can_motors.right_limit)
@@ -407,10 +408,10 @@ def main():
                     if n <= 10:
                         can_motors.speed_mode(-200)
                         sleep(0.5)
-                        # m2.speed_mode(-3)
+                        # m2.speed_mode(-2)
                         # sleep(0.1)
                         if can_motors.weight_m > 1:
-                            m2.speed_mode(-3)
+                            m2.speed_mode(-2)
                             sleep(0.1)
                             # can_motors.weight = 0
                             # m2.stop()
