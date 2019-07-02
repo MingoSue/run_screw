@@ -1,4 +1,4 @@
-# xz轴第五版,xz轴变为速度模式
+# xz轴第五版,xz轴变为速度模式,添加限位和z轴传感器
 import os
 import pytz
 import sys
@@ -59,6 +59,10 @@ class Motor:
         self.motor_id = motor_id
         self.weight = 0
         self.weight_m = 0
+        self.left_limit = 0
+        self.right_limit = 0
+        self.up_limit = 0
+        self.down_limit = 0
         self.ser = serial.Serial('/dev/ttyUSB0', baudrate=57600)
         self.refresh_run()
 
@@ -72,7 +76,22 @@ class Motor:
         t3 = Thread(target=self.button_refresh, name='refresh_button')
         t3.setDaemon(True)
         t3.start()
-        print('three thread  ok~')
+        t4 = Thread(target=self.limit_refresh, name='refresh_limit')
+        t4.setDaemon(True)
+        t4.start()
+        print('four thread  ok~')
+
+    def limit_refresh(self):
+        left = DigitalInputDevice(6)
+        right = DigitalInputDevice(13)
+        up = DigitalInputDevice(26)
+        down = DigitalInputDevice(19)
+        while True:
+            self.left_limit = left.value
+            self.right_limit = right.value
+            self.up_limit = up.value
+            self.down_limit = down.value
+            sleep(0.01)
 
     def button_refresh(self):
         b_out = DigitalInputDevice(27)
@@ -249,41 +268,6 @@ class MotorZ:
         self.speed = 0
         self.now_speed = 0
         self.alive = False
-        # self.weight = 0
-    #     self.ser = serial.Serial('/dev/ttyUSB1', baudrate=57600)
-    #     self.refresh_run_m()
-    #
-    # def refresh_run_m(self):
-    #     t = Thread(target=self.refresh_m, name='refresh_can_m')
-    #     t.setDaemon(True)
-    #     t.start()
-    #     print('thread m ok~')
-
-    # def refresh_m(self):
-    #     # p = LED(21)
-    #     # p.on()
-    #     while True:
-    #         self.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
-    #         sleep(0.05)
-    #         weight_data = self.ser.read_all()
-    #         try:
-    #             weight = round(int('0x' + weight_data.hex()[10:14], 16) * 0.01, 3)
-    #             if weight >= 10:
-    #                 weight = 0
-    #         except Exception as e:
-    #             print(e)
-    #             weight = 0
-    #         try:
-    #             if weight > 1:
-    #                 self.weight = weight
-    #                 print('zzzzzzzzz> max m : {}'.format(weight))
-    #                 # protect io
-    #                 # p.off()
-    #                 # print('zzzzzzzzzzz')
-    #                 # sleep(0.1)
-    #                 # p.on()
-    #         except Exception as e:
-    #             print(e)
 
     def send(self, aid, data):
         msg = can.Message(arbitration_id=aid, data=data, extended_id=False)
@@ -315,11 +299,55 @@ class MotorZ:
         self.send(self.motor_id, self.set_speed_data)
 
 
+class MotorZ2:
+    # None for direction ,0x23 => 1  0x24 => -1
+    run_data = [0x00, 0x20, None, 0x00, 0x00, 0x00, 0x00, 0x03]
+    stop_data = [0x00, 0x20, 0x25, 0x00, 0x00, 0x00, 0x00, 0x01]
+    # None for speed level   1,2,3,4,5,6 - (32,16,8,4,2,1)  1 is slowest   6 is fastest
+    set_speed_data = [0x00, 0x20, 0x33, None, 0x00, 0x00, 0x00, 0x0a]
+    speed_level_mapping = [0x20, 0x10, 0x08, 0x04, 0x02, 0x01]
+
+    def __init__(self, can_channel, motor_id):
+        """
+        Initialization of can motors
+        :param can_channel:name of can device
+        :param motor_id:can id of motor
+        """
+        self.bus = can.interface.Bus(
+            channel=can_channel, bustype='socketcan_ctypes')
+        self.motor_id = motor_id
+        self.speed = 0
+        self.now_speed = 0
+        self.alive = False
+
+    def send(self, aid, data):
+        msg = can.Message(arbitration_id=aid, data=data, extended_id=False)
+        self.bus.send(msg, timeout=1)
+        sleep(0.01)
+
+    def speed_mode(self, speed):
+        # speed > 0 forward, speed < 0 backward, speed = 0 stop
+        self.run_data[2] = 0x23 if speed > 0 else 0x24
+        if speed > 0:
+            speed -= 1
+            self.run_speed_mode(speed)
+        if speed < 0:
+            speed = int(-speed - 1)
+            self.run_speed_mode(speed)
+        if speed == 0:
+            self.send(self.motor_id, self.stop_data)
+
+    def run_speed_mode(self, speed):
+        self.set_speed_data[3] = self.speed_level_mapping[speed]
+        self.send(self.motor_id, self.set_speed_data)
+        sleep(0.05)
+        self.send(self.motor_id, self.run_data)
+
+
 def main():
     m1 = MotorZ('can0', 0xc1)
-    m2 = MotorZ('can0', 0xc2)
+    m2 = MotorZ2('can0', 0xc2)
     m1.set_speed_level(3)
-    m2.set_speed_level(3)
 
     can_motors = Motor('can0', 0x13)
     n = 0
@@ -359,392 +387,42 @@ def main():
             if auto == 1:
 
                 while True:
-                    m2.run(200, 1)
+                    m2.speed_mode(3)
                     sleep(0.1)
+                    print('can_motors.weight_m===========', can_motors.weight_m)
+                    print('can_motors.right_limit///////////', can_motors.right_limit)
                     if can_motors.weight_m > 1:
                         can_motors.speed_mode(200)
                         sleep(0.5)
+                        print('can_motors.weight>>>>>>>>>>>>', can_motors.weight)
                         if can_motors.weight > weight:
                             can_motors.weight = 0
-                            m2.stop()
+                            m2.speed_mode(0)
+                            sleep(0.1)
                             break
+                print('here here...')
                 # reverse
                 while True:
-                    m2.run(200, -1)
-                    sleep(0.1)
-                    if can_motors.weight_m > 1:
-                        can_motors.speed_mode(200)
-                        sleep(5)
+                    n += 1
+                    if n <= 10:
+                        can_motors.speed_mode(-200)
+                        sleep(0.5)
+                        # m2.speed_mode(-3)
+                        # sleep(0.1)
+                        if can_motors.weight_m > 1:
+                            m2.speed_mode(-3)
+                            sleep(0.1)
+                            # can_motors.weight = 0
+                            # m2.stop()
+                    else:
+                        can_motors.speed_mode(0)
                         can_motors.weight = 0
-                        m2.stop()
+                        sleep(2)
+                        m2.speed_mode(0)
+                        n = 0
                         break
                 sleep(1)
-
-        #         while True:
-        #             # can_motors.speed_mode(200)
-        #             print('total]]]]]]]]]]', total)
-        #             m2.run(200, 1)
-        #             sleep(0.1)
-        #             total += 1
-        #             print('can_motors.weight_mmmmmmmmmmmm', can_motors.weight_m)
-        #             if can_motors.weight_m > 1:
-        #                 print('start..')
-        #                 sleep(1)
-        #                 while True:
-        #                     q = 0
-        #                     while True:
-        #                         print('qqqqqqqqqqqq', q)
-        #                         q += 1
-        #                         can_motors.speed_mode(200)
-        #                         sleep(0.5)
-        #                         if q > 10:
-        #                             break
-        #                     if can_motors.weight > weight:
-        #                         print('=============> max n : {}'.format(can_motors.weight))
-        #                         can_motors.weight = 0
-        #                         break
-        #                     else:
-        #                         print('continue...')
-        #                         m2.run(200, 1)
-        #                         total += 1
-        #                         sleep(0.1)
-        #                 can_motors.weight_m = 0
-        #                 break
-        #             # sleep(0.1)
-        #         print('here here...')
-        #         sleep(2)
-        #         while True:
-        #             # reverse
-        #             can_motors.speed_mode(-180)
-        #             sleep(0.5)
-        #             print('gagammmmmmmm')
-        #             if can_motors.weight_m > 1 and total_up < total:
-        #                 can_motors.weight_m = 0
-        #                 m2.run(200, -1)
-        #                 total_up += 1
-        #                 sleep(0.1)
-        #             if total_up >= total:
-        #                 can_motors.speed_mode(0)
-        #                 can_motors.weight_m = 0
-        #                 break
-        #
-        #         if step >= 2:
-        #             print('step_right///////////', step_right)
-        #             m1.run(4800, -1)
-        #             sleep(2)
-        #             step_right += 1
-        #             if step_right >= 2:
-        #                 print('recycle.............')
-        #                 try:
-        #                     with open('adjust_screw_config.json', 'r') as f:
-        #                         config = json.load(f)
-        #                 except:
-        #                     continue
-        #                 # power 1 :on  0:off
-        #                 power = config['power']
-        #                 weight = config['n']
-        #
-        #                 i += 1
-        #                 print('iiiiiiiii', i)
-        #
-        #                 if power == 1:
-        #                     while True:
-        #                         print('total]]]]]]]]]]', total)
-        #                         m2.run(200, 1)
-        #                         total += 1
-        #                         if can_motors.weight_m > 1:
-        #                             while True:
-        #                                 can_motors.speed_mode(200)
-        #                                 sleep(0.5)
-        #                                 if can_motors.weight > weight:
-        #                                     print('=============> max n : {}'.format(can_motors.weight))
-        #                                     can_motors.weight = 0
-        #                                     break
-        #                                 else:
-        #                                     m2.run(200, 1)
-        #                                     total += 1
-        #                                     sleep(0.1)
-        #                             can_motors.weight_m = 0
-        #                             break
-        #                         sleep(0.1)
-        #                     print('here here...')
-        #                     sleep(2)
-        #                     while True:
-        #                         # reverse
-        #                         can_motors.speed_mode(-180)
-        #                         sleep(0.5)
-        #                         print('gaga')
-        #                         if can_motors.weight_m > 1 and total_up < total:
-        #                             can_motors.weight_m = 0
-        #                             m2.run(200, -1)
-        #                             total_up += 1
-        #                             sleep(0.1)
-        #                         if total_up >= total:
-        #                             can_motors.speed_mode(0)
-        #                             can_motors.weight_m = 0
-        #                             break
-        #                 else:
-        #                     print('stand by...222222')
-        #
-        #         else:
-        #             print('step============', step)
-        #             m1.run(4800, 1)
-        #             step += 1
-        #
-        #         sleep(0.5)
-        #
-        #     # 手动
-        #     else:
-        #         if position == 1 and man_cycle != 1:
-        #             if man_position == 4800:
-        #                 m1.run(4800, -1)
-        #                 man_position -= 4800
-        #             elif man_position == 9600:
-        #                 m1.run(9600, -1)
-        #                 man_position -= 9600
-        #             sleep(1)
-        #             while True:
-        #                 p += 1
-        #                 r = 0
-        #                 while True:
-        #                     r += 1
-        #                     can_motors.speed_mode(200)
-        #                     sleep(0.5)
-        #
-        #                     record = Records()
-        #                     record.speed = 200
-        #                     record.direction = 1
-        #                     record.current = can_motors.current if can_motors.current < 10000 else 0
-        #                     record.config_weight = weight
-        #                     record.start_time = get_current_time()
-        #
-        #                     if r >= 5 and p != 1:
-        #                         break
-        #                     elif r >= 10:
-        #                         break
-        #                 while True:
-        #                     print('total]]]]]]]]]]', total)
-        #                     m2.run(200, 1)
-        #                     total += 1
-        #                     if total > 3 and can_motors.weight > weight:
-        #                         print('mmmmmmmmmmmmm', m)
-        #                         m += 1
-        #                         n = 0
-        #
-        #                         record.cycle = m
-        #                         record.weight = can_motors.weight
-        #                         record.d_weight = can_motors.weight - weight
-        #                         record.end_time = get_current_time()
-        #                         record.total_time = (record.end_time - record.start_time).seconds
-        #                         record.save()
-        #
-        #                         can_motors.weight = 0
-        #                         total = 0
-        #                         sleep(2)
-        #                         break
-        #                     sleep(0.1)
-        #                 break
-        #             print('here here...')
-        #             sleep(2.5)
-        #             while True:
-        #                 # reverse
-        #                 can_motors.speed_mode(-180)
-        #                 sleep(0.5)
-        #
-        #                 record = Records()
-        #                 record.cycle = m
-        #                 record.speed = -180
-        #                 record.direction = -1
-        #                 record.current = can_motors.current if can_motors.current < 10000 else 0
-        #                 record.weight = can_motors.weight
-        #                 record.save()
-        #
-        #                 print('gaga')
-        #                 # 再用一次循环
-        #                 while True:
-        #                     if total_up < 15:
-        #                         m2.run(200, -1)
-        #                         sleep(0.1)
-        #                         print('up>>>>>>>>>>', total_up)
-        #                         total_up += 1
-        #                     if total_up >= 15:
-        #                         break
-        #                 sleep(0.8)
-        #                 print('total_up...', total_up)
-        #                 total_up = 0
-        #                 can_motors.speed_mode(0)
-        #                 m2.run(3000, -1)
-        #                 sleep(2)
-        #                 break
-        #             man_cycle = 1
-        #         if position == 2 and man_cycle != 2:
-        #             if man_position == 0:
-        #                 m1.run(4800, 1)
-        #                 man_position += 4800
-        #             elif man_position == 9600:
-        #                 m1.run(4800, -1)
-        #                 man_position -= 4800
-        #             sleep(1)
-        #             while True:
-        #                 p += 1
-        #                 r = 0
-        #                 while True:
-        #                     r += 1
-        #                     can_motors.speed_mode(200)
-        #                     sleep(0.5)
-        #
-        #                     record = Records()
-        #                     record.speed = 200
-        #                     record.direction = 1
-        #                     record.current = can_motors.current if can_motors.current < 10000 else 0
-        #                     record.config_weight = weight
-        #                     record.start_time = get_current_time()
-        #
-        #                     if r >= 5 and p != 1:
-        #                         break
-        #                     elif r >= 10:
-        #                         break
-        #                 while True:
-        #                     print('total]]]]]]]]]]', total)
-        #                     m2.run(200, 1)
-        #                     total += 1
-        #                     if total > 3 and can_motors.weight > weight:
-        #                         print('mmmmmmmmmmmmm', m)
-        #                         m += 1
-        #                         n = 0
-        #
-        #                         record.cycle = m
-        #                         record.weight = can_motors.weight
-        #                         record.d_weight = can_motors.weight - weight
-        #                         record.end_time = get_current_time()
-        #                         record.total_time = (record.end_time - record.start_time).seconds
-        #                         record.save()
-        #
-        #                         can_motors.weight = 0
-        #                         total = 0
-        #                         sleep(2)
-        #                         break
-        #                     sleep(0.1)
-        #                 break
-        #             print('here here...')
-        #             sleep(2.5)
-        #             while True:
-        #                 # reverse
-        #                 can_motors.speed_mode(-180)
-        #                 sleep(0.5)
-        #
-        #                 record = Records()
-        #                 record.cycle = m
-        #                 record.speed = -180
-        #                 record.direction = -1
-        #                 record.current = can_motors.current if can_motors.current < 10000 else 0
-        #                 record.weight = can_motors.weight
-        #                 record.save()
-        #
-        #                 print('gaga')
-        #                 # 再用一次循环
-        #                 while True:
-        #                     if total_up < 15:
-        #                         m2.run(200, -1)
-        #                         sleep(0.1)
-        #                         print('up>>>>>>>>>>', total_up)
-        #                         total_up += 1
-        #                     if total_up >= 15:
-        #                         break
-        #                 sleep(0.8)
-        #                 print('total_up...', total_up)
-        #                 total_up = 0
-        #                 can_motors.speed_mode(0)
-        #                 m2.run(3000, -1)
-        #                 sleep(2)
-        #                 break
-        #             man_cycle = 2
-        #         if position == 3 and man_cycle != 3:
-        #             if man_position == 0:
-        #                 m1.run(9600, 1)
-        #                 man_position += 9600
-        #             elif man_position == 4800:
-        #                 m1.run(4800, 1)
-        #                 man_position += 4800
-        #             sleep(1)
-        #             while True:
-        #                 p += 1
-        #                 r = 0
-        #                 while True:
-        #                     r += 1
-        #                     can_motors.speed_mode(200)
-        #                     sleep(0.5)
-        #
-        #                     record = Records()
-        #                     record.speed = 200
-        #                     record.direction = 1
-        #                     record.current = can_motors.current if can_motors.current < 10000 else 0
-        #                     record.config_weight = weight
-        #                     record.start_time = get_current_time()
-        #
-        #                     if r >= 5 and p != 1:
-        #                         break
-        #                     elif r >= 10:
-        #                         break
-        #                 while True:
-        #                     print('total]]]]]]]]]]', total)
-        #                     m2.run(200, 1)
-        #                     total += 1
-        #                     if total > 3 and can_motors.weight > weight:
-        #                         print('mmmmmmmmmmmmm', m)
-        #                         m += 1
-        #                         n = 0
-        #
-        #                         record.cycle = m
-        #                         record.weight = can_motors.weight
-        #                         record.d_weight = can_motors.weight - weight
-        #                         record.end_time = get_current_time()
-        #                         record.total_time = (record.end_time - record.start_time).seconds
-        #                         record.save()
-        #
-        #                         can_motors.weight = 0
-        #                         total = 0
-        #                         sleep(2)
-        #                         break
-        #                     sleep(0.1)
-        #                 break
-        #             print('here here...')
-        #             sleep(2.5)
-        #             while True:
-        #                 # reverse
-        #                 can_motors.speed_mode(-180)
-        #                 sleep(0.5)
-        #
-        #                 record = Records()
-        #                 record.cycle = m
-        #                 record.speed = -180
-        #                 record.direction = -1
-        #                 record.current = can_motors.current if can_motors.current < 10000 else 0
-        #                 record.weight = can_motors.weight
-        #                 record.save()
-        #
-        #                 print('gaga')
-        #                 # 再用一次循环
-        #                 while True:
-        #                     if total_up < 15:
-        #                         m2.run(200, -1)
-        #                         sleep(0.1)
-        #                         print('up>>>>>>>>>>', total_up)
-        #                         total_up += 1
-        #                     if total_up >= 15:
-        #                         break
-        #                 sleep(0.8)
-        #                 print('total_up...', total_up)
-        #                 total_up = 0
-        #                 can_motors.speed_mode(0)
-        #                 m2.run(3000, -1)
-        #                 sleep(2)
-        #                 break
-        #             man_cycle = 3
-        #
-        # else:
-        #     print('stand by...')
-        # sleep(1)
+                print('again...')
 
 
 if __name__ == "__main__":
