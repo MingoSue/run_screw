@@ -71,16 +71,17 @@ class Motor:
         # speed > 0 forward, speed < 0 backward, speed = 0 stop
         self.run_data[2] = 0x23 if speed > 0 else 0x24
         if speed > 0:
-            speed -= 1
+            # speed -= 1
             self.run_speed_mode(speed)
         if speed < 0:
-            speed = int(-speed - 1)
-            self.run_speed_mode(speed)
+            # speed = int(-speed - 1)
+            self.run_speed_mode(-speed)
         if speed == 0:
             self.send(self.motor_id, self.stop_data)
 
     def run_speed_mode(self, speed):
-        self.set_speed_data[3] = self.speed_level_mapping[speed]
+        # self.set_speed_data[3] = self.speed_level_mapping[speed]
+        self.set_speed_data[3] = speed
         self.send(self.motor_id, self.set_speed_data)
         sleep(0.05)
         self.send(self.motor_id, self.run_data)
