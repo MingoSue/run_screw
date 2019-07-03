@@ -343,7 +343,7 @@ def main():
         #         config = json.load(f)
         # except Exception as e:
         #     print('config error', e)
-        config = {"speed": 0.2, "direction": 1, "n": 0.5, "power": 1, "auto": 1, "position": 0}
+        config = {"speed": 0.2, "direction": 1, "n": 1, "power": 1, "auto": 1, "position": 0}
         # power 1 :on  0:off
         power = config['power']
         weight = config['n']
@@ -357,6 +357,20 @@ def main():
         if power == 1:
 
             if auto == 1:
+                # pre-start
+                r = 0
+                p += 1
+                while True:
+                    r += 1
+                    can_motors.speed_mode(0)
+                    sleep(0.5)
+                    # break
+                    if p != 1:
+                        print('pppppp', p)
+                        break
+                    elif r >= 5:
+                        print('p111111', p)
+                        break
                 while True:
                     # can_motors.speed_mode(200)
                     print('total]]]]]]]]]]', total)
@@ -368,19 +382,9 @@ def main():
                         break
                 print('start..')
                 while True:
-                    p += 1
-                    r = 0
-                    while True:
-                        r += 1
-                        can_motors.speed_mode(200)
-                        sleep(0.5)
-                        break
-                        #if p != 1:
-                        #    break
-                        #elif r >= 3:
-                        #    break
+                    can_motors.speed_mode(200)
+                    sleep(0.5)
                     print('aaaaaaaaaaa')
-                    #sleep(2)
                     while True:
                         print('total]]]]]]]]]]', total)
                         m2.run(200, 1)
@@ -398,7 +402,30 @@ def main():
                         # sleep(0.1)
                     break
                 print('here here...')
+                sleep(4.5)
+                # reverse
+                can_motors.speed_mode(-200)
+                sleep(0.5)
 
+                print('gaga')
+                # 再用一次循环
+                while True:
+                    if total_up < 25:
+                        m2.run(200, -1)
+                        sleep(0.1)
+                        print('up>>>>>>>>>>', total_up)
+                        total_up += 1
+                    if total_up >= 25:
+                        break
+                # sleep(0.8)
+                print('total_up...', total_up)
+                total_up = 0
+                can_motors.speed_mode(0)
+                can_motors.weight_m = 0
+                m2.run(3000, -1)
+                print('end...')
+                sleep(2)
+                
             # 手动
             else:
                 if position == 1 and man_cycle != 1:
