@@ -365,110 +365,39 @@ def main():
                     total += 1
                     print('can_motors.weight_mmmmmmmmmmmm', can_motors.weight_m)
                     if can_motors.weight_m > 1:
-                        print('start..')
-                        sleep(1)
-                        while True:
-                            q = 0
-                            while True:
-                                print('qqqqqqqqqqqq', q)
-                                q += 1
-                                can_motors.speed_mode(200)
-                                sleep(0.5)
-                                if q > 10:
-                                    break
-                            if can_motors.weight > weight:
-                                print('=============> max n : {}'.format(can_motors.weight))
-                                can_motors.weight = 0
-                                break
-                            else:
-                                print('continue...')
-                                m2.run(200, 1)
-                                total += 1
-                                sleep(0.1)
-                        can_motors.weight_m = 0
                         break
-                    # sleep(0.1)
-                print('here here...')
-                sleep(2)
+                print('start..')
                 while True:
-                    # reverse
-                    can_motors.speed_mode(-180)
-                    sleep(0.5)
-                    print('gagammmmmmmm')
-                    if can_motors.weight_m > 1 and total_up < total:
-                        can_motors.weight_m = 0
-                        m2.run(200, -1)
-                        total_up += 1
-                        sleep(0.1)
-                    if total_up >= total:
-                        can_motors.speed_mode(0)
-                        can_motors.weight_m = 0
+                    p += 1
+                    r = 0
+                    while True:
+                        r += 1
+                        can_motors.speed_mode(200)
+                        sleep(0.5)
                         break
+                        #if p != 1:
+                        #    break
+                        #elif r >= 3:
+                        #    break
+                    print('aaaaaaaaaaa')
+                    #sleep(2)
+                    while True:
+                        print('total]]]]]]]]]]', total)
+                        m2.run(200, 1)
+                        sleep(0.1)
+                        total += 1
+                        if total > 3 and can_motors.weight > weight:
+                            print('mmmmmmmmmmmmm', m)
+                            m += 1
+                            n = 0
 
-                if step >= 2:
-                    print('step_right///////////', step_right)
-                    m1.run(4800, -1)
-                    sleep(2)
-                    step_right += 1
-                    if step_right >= 2:
-                        print('recycle.............')
-                        try:
-                            with open('adjust_screw_config.json', 'r') as f:
-                                config = json.load(f)
-                        except:
-                            continue
-                        # power 1 :on  0:off
-                        power = config['power']
-                        weight = config['n']
-
-                        i += 1
-                        print('iiiiiiiii', i)
-
-                        if power == 1:
-                            while True:
-                                print('total]]]]]]]]]]', total)
-                                m2.run(200, 1)
-                                total += 1
-                                if can_motors.weight_m > 1:
-                                    while True:
-                                        can_motors.speed_mode(200)
-                                        sleep(0.5)
-                                        if can_motors.weight > weight:
-                                            print('=============> max n : {}'.format(can_motors.weight))
-                                            can_motors.weight = 0
-                                            break
-                                        else:
-                                            m2.run(200, 1)
-                                            total += 1
-                                            sleep(0.1)
-                                    can_motors.weight_m = 0
-                                    break
-                                sleep(0.1)
-                            print('here here...')
-                            sleep(2)
-                            while True:
-                                # reverse
-                                can_motors.speed_mode(-180)
-                                sleep(0.5)
-                                print('gaga')
-                                if can_motors.weight_m > 1 and total_up < total:
-                                    can_motors.weight_m = 0
-                                    m2.run(200, -1)
-                                    total_up += 1
-                                    sleep(0.1)
-                                if total_up >= total:
-                                    can_motors.speed_mode(0)
-                                    can_motors.weight_m = 0
-                                    break
-                        else:
-                            print('stand by...222222')
-
-                else:
-                    print('step============', step)
-                    m1.run(4800, 1)
-                    step += 1
-
-                sleep(0.5)
+                            can_motors.weight = 0
+                            total = 0
+                            # sleep(2)
+                            break
+                        # sleep(0.1)
+                    break
+                print('here here...')
 
             # 手动
             else:
