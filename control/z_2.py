@@ -11,8 +11,8 @@ class Motor:
     run_data = [0x00, 0x20, None, 0x00, 0x00, 0x00, 0x00, 0x03]
     stop_data = [0x00, 0x20, 0x25, 0x00, 0x00, 0x00, 0x00, 0x01]
     # None for speed level   1,2,3,4,5,6 - (32,16,8,4,2,1)  1 is slowest   6 is fastest
-    set_speed_data = [0x00, 0x20, 0x33, None, 0x00, 0x00, 0x00, 0x0a]
-    speed_level_mapping = [0x20, 0x10, 0x08, 0x04, 0x02, 0x01]
+    set_speed_data = [0x00, 0x20, 0x26, None, 0x00, 0x00, 0x00, 0x02]
+    # speed_level_mapping = [0x20, 0x10, 0x08, 0x04, 0x02, 0x01]
 
     def __init__(self, can_channel, motor_id):
         """
@@ -81,7 +81,11 @@ class Motor:
 
     def run_speed_mode(self, speed):
         # self.set_speed_data[3] = self.speed_level_mapping[speed]
-        self.set_speed_data[3] = speed
+        self.set_speed_data[6] = (0xff000000 & speed) >> 24
+        self.set_speed_data[5] = (0x00ff0000 & speed) >> 16
+        self.set_speed_data[4] = (0x0000ff00 & speed) >> 8
+        self.set_speed_data[3] = 0x000000ff & speed
+        # self.set_speed_data[3] = speed
         self.send(self.motor_id, self.set_speed_data)
         sleep(0.05)
         self.send(self.motor_id, self.run_data)
@@ -91,7 +95,7 @@ def main():
     m2 = Motor('can0', 0xc1)
 
     # run(only 2 and 3 can)
-    m2.speed_mode(-3)
+    m2.speed_mode(75)
     print('run...')
     sleep(5)
     m2.speed_mode(0)
