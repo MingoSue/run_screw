@@ -169,7 +169,7 @@ class Motor:
             try:
                 weight_m = round(int('0x' + weight_data_m.hex()[10:14], 16) * 0.01, 3)
                 if weight_m >= 10:
-                    print('////////////>>>', weight_m)
+                    # print('////////////>>>', weight_m)
                     weight_m = 0
             except Exception as e:
                 print('error2222222222', e)
@@ -372,7 +372,7 @@ def main():
         #         config = json.load(f)
         # except Exception as e:
         #     print('config error', e)
-        config = {"speed": 0.2, "direction": 1, "n": 0.5, "power": 1, "auto": 1, "position": 0}
+        config = {"speed": 0.2, "direction": 1, "n": 2, "power": 1, "auto": 1, "position": 0}
         # power 1 :on  0:off
         power = config['power']
         weight = config['n']
@@ -386,43 +386,51 @@ def main():
         if power == 1:
 
             if auto == 1:
-
+                # pre-start
+                r = 0
+                p += 1
                 while True:
-                    m2.speed_mode(2)
+                    r += 1
+                    can_motors.speed_mode(0)
+                    sleep(0.5)
+                    # break
+                    if p != 1:
+                        print('pppppp', p)
+                        break
+                    elif r >= 5:
+                        print('p111111', p)
+                        break
+                print('start...')
+                while True:
+                    m2.speed_mode(350)
                     sleep(0.1)
                     print('can_motors.weight_m===========', can_motors.weight_m)
                     print('can_motors.right_limit///////////', can_motors.right_limit)
                     if can_motors.weight_m > 1:
-                        can_motors.speed_mode(200)
+                        can_motors.speed_mode(300)
                         sleep(0.5)
                         print('can_motors.weight>>>>>>>>>>>>', can_motors.weight)
                         if can_motors.weight > weight:
-                            can_motors.weight = 0
                             m2.speed_mode(0)
+                            can_motors.weight = 0
                             sleep(0.1)
                             break
                 print('here here...')
+                sleep(4)
                 # reverse
-                while True:
-                    n += 1
-                    if n <= 10:
-                        can_motors.speed_mode(-200)
-                        sleep(0.5)
-                        # m2.speed_mode(-2)
-                        # sleep(0.1)
-                        if can_motors.weight_m > 1:
-                            m2.speed_mode(-2)
-                            sleep(0.1)
-                            # can_motors.weight = 0
-                            # m2.stop()
-                    else:
-                        can_motors.speed_mode(0)
-                        can_motors.weight = 0
-                        sleep(2)
-                        m2.speed_mode(0)
-                        n = 0
-                        break
-                sleep(1)
+                can_motors.speed_mode(-300)
+                sleep(0.5)
+
+                print('gaga')
+                m2.speed_mode(-350)
+                sleep(2)
+                can_motors.speed_mode(0)
+                sleep(2)
+                can_motors.weight_m = 0
+                m2.speed_mode(0)
+                print('end...')
+                sleep(2)
+                
                 print('again...')
 
 
