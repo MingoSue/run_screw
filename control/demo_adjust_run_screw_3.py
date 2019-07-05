@@ -367,6 +367,7 @@ def main():
     direction = 1
     # speed2 should < 1000
     speed2 = 500
+    settle_speed = 0
     while True:
 
         # try:
@@ -418,13 +419,25 @@ def main():
                             speed2 += 50
                         elif 950 <= speed2 < 995:
                             speed2 += 45
+                            settle_speed = actual_speed
+                            print('settle s speed...', actual_speed)
                         print('speed222222222222', speed2)
-
+                    if speed2 < 995:
+                        settle_speed = actual_speed
                     print('change speed......actual...', actual_speed)
                     while True:
                         print('lower speed...', speed2)
                         z.speed_mode(speed2)
-                        can_motors.speed_mode(actual_speed)
+                        can_motors.speed_mode(settle_speed)
+                        sleep(0.5)
+                        z.speed_mode(0)
+                        while True:
+                            can_motors.speed_mode(50)
+                            if can_motors.weight > weight:
+                                break
+                        # z.speed_mode(speed2)
+                        # sleep(avg_time - 0.1) for future
+                        # z.speed_mode(0)
                         if can_motors.weight > weight:
                             z.speed_mode(0)
                             print('can_motors.weight>>>>>>>>>>>>', can_motors.weight)
@@ -447,7 +460,8 @@ def main():
 
                     can_motors.speed_mode(0)
                     can_motors.weight = 0
-                    sleep(3)
+                    z.speed_mode(-200)
+                    sleep(1.5)
                     z.speed_mode(0)
                     can_motors.weight_z = 0
                     print('end...')
