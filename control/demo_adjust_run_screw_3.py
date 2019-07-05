@@ -58,7 +58,7 @@ class Motor:
         self.current = 0
         self.motor_id = motor_id
         self.weight = 0
-        self.weight_m = 0
+        self.weight_z = 0
         self.left_limit = 0
         self.right_limit = 0
         self.up_limit = 0
@@ -142,7 +142,7 @@ class Motor:
                 if weight >= 10:
                     weight = 0
             except Exception as e:
-                print('error111111111111', e)
+                print('errorsssssssssssss', e)
                 weight = 0
             try:
                 with open('weight.json', 'w') as f:
@@ -153,38 +153,34 @@ class Motor:
 
                 if weight > config['n']:
                     self.weight = weight
-                    print('ssssssssssss> max n : {}'.format(weight))
-                    # protect io
+                    print('ssssssssssss> max s : {}'.format(weight))
 
+                    # protect io
                     p.off()
                     print('ppppppppppppp')
                     sleep(0.1)
                     p.on()
             except Exception as e:
-                print('errorrrrrrrrrr', e)
+                print('error ssss22222222', e)
 
+            # get weight_z value
             self.ser.write([0x01, 0x03, 0x00, 0x50, 0x00, 0x02, 0xC4, 0x1A])
             sleep(0.05)
             weight_data_m = self.ser.read_all()
             try:
-                weight_m = round(int('0x' + weight_data_m.hex()[10:14], 16) * 0.01, 3)
-                if weight_m >= 10:
-                    # print('////////////>>>', weight_m)
-                    weight_m = 0
+                weight_z = round(int('0x' + weight_data_m.hex()[10:14], 16) * 0.01, 3)
+                if weight_z >= 10:
+                    # print('////////////>>>', weight_z)
+                    weight_z = 0
             except Exception as e:
-                print('error2222222222', e)
-                weight_m = 0
+                print('errorzzzzzzzzzzzzzz', e)
+                weight_z = 0
             try:
-                if weight_m > 1:
-                    self.weight_m = weight_m
-                    print('mmmmmmmmmmmmmm> max m : {}'.format(weight_m))
-                    # protect io
-                    # p.off()
-                    # print('zzzzzzzzzzz')
-                    # sleep(0.1)
-                    # p.on()
+                if weight_z > 1:
+                    self.weight_z = weight_z
+                    print('zzzzzzzzzzzzzzzz> max z : {}'.format(weight_z))
             except Exception as e:
-                print(e)
+                print('error zzzzzz2222222222', e)
 
     def refresh(self):
         while True:
@@ -249,7 +245,7 @@ def poweroff():
         json.dump(config, f)
 
 
-class MotorZ:
+class MotorY:
     # None for direction ,0x23 => 1  0x24 => -1
     run_data = [0x00, 0x20, None, 0x00, 0x00, 0x00, 0x00, 0x03]
     stop_data = [0x00, 0x20, 0x25, 0x00, 0x00, 0x00, 0x00, 0x01]
@@ -300,7 +296,7 @@ class MotorZ:
         self.send(self.motor_id, self.set_speed_data)
 
 
-class MotorZ2:
+class MotorZ:
     # None for direction ,0x23 => 1  0x24 => -1
     run_data = [0x00, 0x20, None, 0x00, 0x00, 0x00, 0x00, 0x03]
     stop_data = [0x00, 0x20, 0x25, 0x00, 0x00, 0x00, 0x00, 0x01]
@@ -347,9 +343,9 @@ class MotorZ2:
 
 
 def main():
-    m1 = MotorZ('can0', 0xc1)
-    m2 = MotorZ2('can0', 0xc2)
-    m1.set_speed_level(3)
+    y = MotorY('can0', 0xc1)
+    z = MotorZ('can0', 0xc2)
+    y.set_speed_level(3)
 
     can_motors = Motor('can0', 0x13)
     n = 0
@@ -410,48 +406,49 @@ def main():
                         break
 
                 print('start...')
+                z.speed_mode(400)
                 while True:
-                    # while True:
-                    #     m2.speed_mode(speed2)
-                    #     if can_motors.weight_m > 1 and can_motors.weight_m - weight2 > 1:
-                    #         speed2 += 10
-                    #     elif can_motors.weight_m > 0 and can_motors.weight_m - weight2 <= 1:
-                    #         break
-
-                    m2.speed_mode(speed2)
+                    # z.speed_mode(speed2)
                     # sleep(0.1)
-                    print('can_motors.weight_m===========', can_motors.weight_m)
-                    # print('can_motors.right_limit///////////', can_motors.right_limit)
-                    if can_motors.weight_m > 1:
-                        if can_motors.weight_m - weight2 > 1 and speed2 < 760:
+                    if can_motors.weight_z > 1:
+                        print('can_motors.weight_z===========', can_motors.weight_z)
+                        if can_motors.weight_z - weight2 > 1 and speed2 < 760:
                             speed2 += 10
                             print('speed222222222222', speed2)
+                        z.speed_mode(speed2)
+                        can_motors.speed_mode(304)
+                        sleep(1.5)
+
+                        print('change speed......')
                         can_motors.speed_mode(actual_speed)
-                        sleep(0.5)
-                        print('can_motors.weight>>>>>>>>>>>>', can_motors.weight)
+
                         if can_motors.weight > weight:
-                            m2.speed_mode(0)
+                            z.speed_mode(0)
+                            print('can_motors.weight>>>>>>>>>>>>', can_motors.weight)
                             if can_motors.weight - weight > 1 and speed > 0.05:
                                 speed -= 0.05
                                 print('speed111111111111', speed)
+                            if can_motors.weight - weight <= 1:
+                                print('**********************************')
                             can_motors.weight = 0
-                            # sleep(0.1)
                             break
+
                 print('here here...')
                 sleep(4.5)
                 while True:
                     # reverse
                     can_motors.speed_mode(-304)
-                    sleep(0.5)
-
-                    print('gaga')
-                    m2.speed_mode(-400)
+                    # sleep(0.5)
+                    z.speed_mode(-400)
                     sleep(2)
+                    print('gaga')
+
                     can_motors.speed_mode(0)
                     sleep(3)
-                    can_motors.weight_m = 0
-                    m2.speed_mode(0)
+                    z.speed_mode(0)
+                    can_motors.weight_z = 0
                     print('end...')
+
                     sleep(2)
                     break
                 
