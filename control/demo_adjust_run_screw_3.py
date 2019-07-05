@@ -153,7 +153,7 @@ class Motor:
 
                 if weight > config['n']:
                     self.weight = weight
-                    print('ssssssssssss> max s : {}'.format(weight))
+                    # print('ssssssssssss> max s : {}'.format(weight))
 
                     # protect io
                     p.off()
@@ -178,7 +178,7 @@ class Motor:
             try:
                 if weight_z > 1:
                     self.weight_z = weight_z
-                    print('zzzzzzzzzzzzzzzz> max z : {}'.format(weight_z))
+                    # print('zzzzzzzzzzzzzzzz> max z : {}'.format(weight_z))
             except Exception as e:
                 print('error zzzzzz2222222222', e)
 
@@ -365,7 +365,8 @@ def main():
 
     speed = 0.9
     direction = 1
-    speed2 = 520
+    # speed2 should < 1000
+    speed2 = 500
     while True:
 
         # try:
@@ -397,9 +398,9 @@ def main():
                     r += 1
                     can_motors.speed_mode(0)
                     sleep(0.5)
-                    # break
+
                     if p != 1:
-                        print('pppppp', p)
+                        print('ppppppp', p)
                         break
                     elif r >= 5:
                         print('p111111', p)
@@ -407,35 +408,36 @@ def main():
 
                 print('start...')
                 z.speed_mode(400)
-                while True:
-                    # z.speed_mode(speed2)
-                    # sleep(0.1)
-                    if can_motors.weight_z > 1:
-                        print('can_motors.weight_z===========', can_motors.weight_z)
-                        if can_motors.weight_z - weight2 > 1 and speed2 < 760:
-                            speed2 += 10
-                            print('speed222222222222', speed2)
+
+                if can_motors.weight_z > 1:
+                    print('can_motors.weight_z===========', can_motors.weight_z)
+                    can_motors.speed_mode(304)
+                    sleep(1.5)
+                    if can_motors.weight_z - weight2 > 1:
+                        if speed2 <= 900:
+                            speed2 += 50
+                        elif 950 <= speed2 < 995:
+                            speed2 += 45
+                        print('speed222222222222', speed2)
+
+                    print('change speed......actual...', actual_speed)
+                    while True:
+                        print('lower speed...', speed2)
                         z.speed_mode(speed2)
-                        can_motors.speed_mode(304)
-                        sleep(1.5)
-
-                        print('change speed......')
                         can_motors.speed_mode(actual_speed)
-
                         if can_motors.weight > weight:
                             z.speed_mode(0)
                             print('can_motors.weight>>>>>>>>>>>>', can_motors.weight)
-                            if can_motors.weight - weight > 1 and speed > 0.05:
-                                speed -= 0.05
+                            if can_motors.weight - weight > 1 and speed > 0.03:
+                                speed -= 0.03
                                 print('speed111111111111', speed)
                             if can_motors.weight - weight <= 1:
                                 print('**********************************')
                             can_motors.weight = 0
                             break
 
-                print('here here...')
-                sleep(4.5)
-                while True:
+                    print('here here...')
+                    sleep(4.5)
                     # reverse
                     can_motors.speed_mode(-304)
                     # sleep(0.5)
@@ -444,15 +446,15 @@ def main():
                     print('gaga')
 
                     can_motors.speed_mode(0)
+                    can_motors.weight = 0
                     sleep(3)
                     z.speed_mode(0)
                     can_motors.weight_z = 0
                     print('end...')
 
                     sleep(2)
-                    break
-                
-                print('again...')
+
+                    print('again...')
 
 
 if __name__ == "__main__":

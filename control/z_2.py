@@ -93,12 +93,20 @@ class Motor:
 
 def main():
     m2 = Motor('can0', 0xc1)
+    speed = 500
 
-    # run(only 2 and 3 can)
-    m2.speed_mode(75)
-    print('run...')
-    sleep(5)
-    m2.speed_mode(0)
+    while True:
+        print('speed============', speed)
+        m2.speed_mode(speed)
+        print('run...')
+        sleep(5)
+        m2.speed_mode(0)
+        sleep(1)
+        # speed < 1000
+        if speed < 900:
+            speed += 50
+        elif speed < 1000:
+            speed += 10
 
 
 if __name__ == "__main__":
