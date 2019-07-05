@@ -367,9 +367,9 @@ def main():
     man_position = 0
     man_cycle = 0
 
-    speed = 0.8
+    speed = 0.9
     direction = 1
-    speed2 = 400
+    speed2 = 520
     while True:
 
         # try:
@@ -421,10 +421,10 @@ def main():
                     m2.speed_mode(speed2)
                     # sleep(0.1)
                     print('can_motors.weight_m===========', can_motors.weight_m)
-                    print('can_motors.right_limit///////////', can_motors.right_limit)
+                    # print('can_motors.right_limit///////////', can_motors.right_limit)
                     if can_motors.weight_m > 1:
                         if can_motors.weight_m - weight2 > 1 and speed2 < 760:
-                            speed2 += 5
+                            speed2 += 10
                             print('speed222222222222', speed2)
                         can_motors.speed_mode(actual_speed)
                         sleep(0.5)
@@ -448,7 +448,7 @@ def main():
                     m2.speed_mode(-400)
                     sleep(2)
                     can_motors.speed_mode(0)
-                    sleep(2)
+                    sleep(3)
                     can_motors.weight_m = 0
                     m2.speed_mode(0)
                     print('end...')
