@@ -402,10 +402,8 @@ def main():
                     sleep(0.5)
 
                     if p != 1:
-                        # print('ppppppp', p)
                         break
                     elif r >= 5:
-                        # print('p111111', p)
                         break
                 settled_list = Records.objects.filter(screw_type='test001', is_settled=True).distinct() \
                     .aggregate(Avg('total_time'))
