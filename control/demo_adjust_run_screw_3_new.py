@@ -445,7 +445,6 @@ def main():
                                 if can_motors.weight > weight:
                                     break
                             if can_motors.weight > weight:
-                                # z.speed_mode(0)
                                 print('can_motors.weight2222222222222', can_motors.weight)
                                 m += 1
 
@@ -459,6 +458,22 @@ def main():
                                 record.save()
                                 can_motors.weight = 0
                                 print('record.total_time&&&&&&&&&&&&&&', record.total_time)
+
+                                if record.d_weight > 3:
+                                    print('cycle...up...')
+                                    while True:
+                                        z.speed_mode(-speed2)
+                                        if can_motors.up_limit == 1:
+                                            z.speed_mode(0)
+                                            print('cycle...stop...')
+
+                                            with open('adjust_screw_config.json', 'r') as f:
+                                                config = json.load(f)
+                                            config.update({'power': 0})
+                                            with open('adjust_screw_config.json', 'w') as f:
+                                                json.dump(config, f)
+                                            break
+                                    can_motors.weight = 0
 
                                 if record.d_weight > 1 and actual_speed > 5:
                                     actual_speed -= 5
@@ -542,7 +557,7 @@ def main():
                                 record.save()
                                 print('record.total_time$$$$$$$$$$$$', record.total_time)
 
-                                if can_motors.weight - weight > 2:
+                                if record.d_weight > 3:
                                     print('initial...up...')
                                     while True:
                                         z.speed_mode(-speed2)
