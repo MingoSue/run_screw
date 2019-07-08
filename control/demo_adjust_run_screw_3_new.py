@@ -426,8 +426,6 @@ def main():
                         z.speed_mode(400)
                         if can_motors.weight_z > 1:
                             print('can_motors.weight_z===========', can_motors.weight_z)
-                            can_motors.speed_mode(304)
-                            sleep(s_time)
                             record = Records()
                             record.screw_type = screw_type
                             record.speed = 304
@@ -435,6 +433,9 @@ def main():
                             record.current = can_motors.current if can_motors.current < 10000 else 0
                             record.config_weight = weight
                             record.start_time = get_current_time()
+                            
+                            can_motors.speed_mode(304)
+                            sleep(s_time)
 
                             z.speed_mode(0)
                             # second stage
@@ -453,12 +454,17 @@ def main():
                                 record.d_weight = can_motors.weight - weight
                                 if record.d_weight > 1 and actual_speed > 5:
                                     actual_speed -= 5
-                                else:
+                                if record.d_weight < 1:
                                     record.is_settled = True
                                     print('settled...')
+                                    actual_speed += 5
+                                # else:
+                                #     record.is_settled = True
+                                #     print('settled...')
                                 record.end_time = get_current_time()
                                 record.total_time = (record.end_time - record.start_time).total_seconds()
                                 record.save()
+                                print('record.total_time&&&&&&&&&&&&&&', record.total_time)
 
                                 print('here here...')
                                 sleep(4.5)
