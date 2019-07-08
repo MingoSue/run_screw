@@ -467,7 +467,6 @@ def main():
 
                                             with open('adjust_screw_config.json', 'r') as f:
                                                 config = json.load(f)
-                                                power = 0
                                             config.update({'power': 0})
                                             with open('adjust_screw_config.json', 'w') as f:
                                                 json.dump(config, f)
@@ -475,7 +474,7 @@ def main():
                                     record.save()
                                     can_motors.weight = 0
 
-                                if power == 1:
+                                else:
 
                                     if record.d_weight > 1 and actual_speed > 5:
                                         actual_speed -= 5
