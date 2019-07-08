@@ -445,6 +445,7 @@ def main():
                                     break
                             if can_motors.weight > weight:
                                 z.speed_mode(0)
+                                print('can_motors.weight2222222222222', can_motors.weight)
                                 m += 1
 
                                 record.cycle = m
@@ -509,6 +510,7 @@ def main():
                         z.speed_mode(400)
                         if can_motors.weight_z > 1:
                             can_motors.speed_mode(304)
+                            sleep(0.5)
 
                             record = Records()
                             record.screw_type = screw_type
@@ -520,6 +522,7 @@ def main():
 
                             if can_motors.weight > weight:
                                 z.speed_mode(0)
+                                print('can_motors.weight>>>>>>>>>>>>', can_motors.weight)
                                 m += 1
 
                                 record.cycle = m
@@ -531,18 +534,21 @@ def main():
 
                                 if can_motors.weight - weight > 3:
                                     print('initial...up...')
-                                    z.speed_mode(-400)
-                                    if can_motors.up_limit == 1:
-                                        z.speed_mode(0)
-                                        print('initial...stop...')
+                                    while True:
+                                        z.speed_mode(-400)
+                                        if can_motors.up_limit == 1:
+                                            z.speed_mode(0)
+                                            print('initial...stop...')
 
-                                        with open('adjust_screw_config.json', 'r') as f:
-                                            config = json.load(f)
-                                        config.update({'power': 0})
-                                        with open('adjust_screw_config.json', 'w') as f:
-                                            json.dump(config, f)
+                                            with open('adjust_screw_config.json', 'r') as f:
+                                                config = json.load(f)
+                                            config.update({'power': 0})
+                                            with open('adjust_screw_config.json', 'w') as f:
+                                                json.dump(config, f)
+                                            break
                                 else:
                                     # reverse
+                                    print('initial...haha...')
                                     can_motors.speed_mode(-304)
                                     z.speed_mode(-400)
 
@@ -556,7 +562,7 @@ def main():
                                     record.save()
 
                                     sleep(record.total_time)
-                                    print('initial...gaga')
+                                    print('initial...gaga...')
 
                                     can_motors.speed_mode(0)
                                     can_motors.weight = 0
