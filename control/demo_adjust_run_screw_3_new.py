@@ -412,7 +412,7 @@ def main():
                     avg_time = settled_list['total_time__avg']
                     print('%%%%%%%%%%%%%avg_time', avg_time)
                 else:
-                    record_list = Records.objects.filter(direction=1, d_weight__lte=1, d_weight__gt=0,
+                    record_list = Records.objects.filter(direction=1, d_weight__gt=0, total_time__gt=0,
                                                          screw_type='test001').distinct().aggregate(Avg('total_time'))
                     print('record_list==========', record_list)
                     avg_time = record_list['total_time__avg'] if record_list['total_time__avg'] else 0.0
@@ -455,7 +455,7 @@ def main():
                                 else:
                                     record.is_settled = True
                                 record.end_time = get_current_time()
-                                record.total_time = (record.end_time - record.start_time).seconds
+                                record.total_time = (record.end_time - record.start_time).total_seconds()
                                 record.save()
 
                                 print('here here...')
@@ -504,77 +504,81 @@ def main():
                         with open('adjust_screw_config.json', 'w') as f:
                             json.dump(config, f)
                 else:
-                    print('initial...start...')
-                    z.speed_mode(400)
-                    if can_motors.weight_z > 1:
-                        can_motors.speed_mode(304)
+                    while True:
+                        print('initial...start...')
+                        z.speed_mode(400)
+                        if can_motors.weight_z > 1:
+                            can_motors.speed_mode(304)
 
-                        record = Records()
-                        record.screw_type = screw_type
-                        record.speed = 304
-                        record.direction = 1
-                        record.current = can_motors.current if can_motors.current < 10000 else 0
-                        record.config_weight = weight
-                        record.start_time = get_current_time()
+                            record = Records()
+                            record.screw_type = screw_type
+                            record.speed = 304
+                            record.direction = 1
+                            record.current = can_motors.current if can_motors.current < 10000 else 0
+                            record.config_weight = weight
+                            record.start_time = get_current_time()
 
-                        if can_motors.weight > weight:
-                            z.speed_mode(0)
-                            m += 1
+                            if can_motors.weight > weight:
+                                z.speed_mode(0)
+                                m += 1
 
-                            record.cycle = m
-                            record.weight = can_motors.weight
-                            record.d_weight = can_motors.weight - weight
-                            record.end_time = get_current_time()
-                            record.total_time = (record.end_time - record.start_time).seconds
-                            record.save()
-
-                            if can_motors.weight - weight > 3:
-                                z.speed_mode(-400)
-                                if can_motors.up_limit == 1:
-                                    z.speed_mode(0)
-
-                                    with open('adjust_screw_config.json', 'r') as f:
-                                        config = json.load(f)
-                                    config.update({'power': 0})
-                                    with open('adjust_screw_config.json', 'w') as f:
-                                        json.dump(config, f)
-                            else:
-                                # reverse
-                                can_motors.speed_mode(-304)
-                                z.speed_mode(-400)
-
-                                record = Records()
-                                record.screw_type = screw_type
                                 record.cycle = m
-                                record.speed = -304
-                                record.direction = -1
-                                record.current = can_motors.current if can_motors.current < 10000 else 0
                                 record.weight = can_motors.weight
+                                record.d_weight = can_motors.weight - weight
+                                record.end_time = get_current_time()
+                                record.total_time = (record.end_time - record.start_time).total_seconds()
                                 record.save()
 
-                                sleep(record.total_time)
-                                print('initial...gaga')
+                                if can_motors.weight - weight > 3:
+                                    print('initial...up...')
+                                    z.speed_mode(-400)
+                                    if can_motors.up_limit == 1:
+                                        z.speed_mode(0)
+                                        print('initial...stop...')
 
-                                can_motors.speed_mode(0)
-                                can_motors.weight = 0
-                                z.speed_mode(-200)
-                                sleep(1.5)
-                                z.speed_mode(0)
-                                can_motors.weight_z = 0
+                                        with open('adjust_screw_config.json', 'r') as f:
+                                            config = json.load(f)
+                                        config.update({'power': 0})
+                                        with open('adjust_screw_config.json', 'w') as f:
+                                            json.dump(config, f)
+                                else:
+                                    # reverse
+                                    can_motors.speed_mode(-304)
+                                    z.speed_mode(-400)
 
-                                config_data = ScrewConfig()
-                                config_data.n = weight
-                                config_data.power = power
-                                config_data.direction = direction
-                                config_data.speed = speed
-                                config_data.actual_speed = actual_speed
-                                config_data.cycle = m
-                                config_data.save()
+                                    record = Records()
+                                    record.screw_type = screw_type
+                                    record.cycle = m
+                                    record.speed = -304
+                                    record.direction = -1
+                                    record.current = can_motors.current if can_motors.current < 10000 else 0
+                                    record.weight = can_motors.weight
+                                    record.save()
 
-                                print('initial...end...')
-                                sleep(2)
+                                    sleep(record.total_time)
+                                    print('initial...gaga')
 
-                                print('initial...again...')
+                                    can_motors.speed_mode(0)
+                                    can_motors.weight = 0
+                                    z.speed_mode(-200)
+                                    sleep(1.5)
+                                    z.speed_mode(0)
+                                    can_motors.weight_z = 0
+
+                                    config_data = ScrewConfig()
+                                    config_data.n = weight
+                                    config_data.power = power
+                                    config_data.direction = direction
+                                    config_data.speed = speed
+                                    config_data.actual_speed = actual_speed
+                                    config_data.cycle = m
+                                    config_data.save()
+
+                                    print('initial...end...')
+                                    sleep(2)
+
+                                    print('initial...again...')
+                                break
 
         else:
             print('stand by...')

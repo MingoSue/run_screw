@@ -3,7 +3,7 @@ from time import sleep
 import can
 from threading import Thread
 import serial
-from gpiozero import LED
+from gpiozero import LED, DigitalInputDevice
 
 
 class Motor:
@@ -27,6 +27,29 @@ class Motor:
         self.now_speed = 0
         self.alive = False
         self.weight = 0
+        self.left_limit = 0
+        self.right_limit = 0
+        self.up_limit = 0
+        self.down_limit = 0
+        self.refresh_run()
+
+    def refresh_run(self):
+        t4 = Thread(target=self.limit_refresh, name='refresh_limit')
+        t4.setDaemon(True)
+        t4.start()
+        print('thread  ok~')
+
+    def limit_refresh(self):
+        left = DigitalInputDevice(6)
+        right = DigitalInputDevice(13)
+        up = DigitalInputDevice(26)
+        down = DigitalInputDevice(19)
+        while True:
+            self.left_limit = left.value
+            self.right_limit = right.value
+            self.up_limit = up.value
+            self.down_limit = down.value
+            sleep(0.01)
     #     self.ser = serial.Serial('/dev/ttyUSB0')
     #     self.refresh_run_m()
     #
@@ -99,14 +122,17 @@ def main():
         print('speed============', speed)
         m2.speed_mode(speed)
         print('run...')
-        sleep(5)
-        m2.speed_mode(0)
-        sleep(1)
-        # speed < 1000
-        if speed < 900:
-            speed += 50
-        elif speed < 1000:
-            speed += 10
+        if m2.up_limit == 1:
+            m2.speed_mode(0)
+            break
+        # sleep(5)
+        # m2.speed_mode(0)
+        # sleep(1)
+        # # speed < 1000
+        # if speed < 900:
+        #     speed += 50
+        # elif speed < 1000:
+        #     speed += 10
 
 
 if __name__ == "__main__":
