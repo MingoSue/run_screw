@@ -386,7 +386,7 @@ def main():
         position = config['position']
         screw_type = 'test001'
 
-        i += 1
+        # i += 1
         # print('iiiiiiiii', i)
 
         if power == 1:
@@ -451,10 +451,11 @@ def main():
                                 record.cycle = m
                                 record.weight = can_motors.weight
                                 record.d_weight = can_motors.weight - weight
-                                if record.d_weight > 1 and speed > 5:
+                                if record.d_weight > 1 and actual_speed > 5:
                                     actual_speed -= 5
                                 else:
                                     record.is_settled = True
+                                    print('settled...')
                                 record.end_time = get_current_time()
                                 record.total_time = (record.end_time - record.start_time).total_seconds()
                                 record.save()
@@ -488,7 +489,7 @@ def main():
                                 config_data.n = weight
                                 config_data.power = power
                                 config_data.direction = direction
-                                config_data.speed = speed
+                                config_data.speed = -304
                                 config_data.actual_speed = actual_speed
                                 config_data.cycle = m
                                 config_data.save()
@@ -574,7 +575,7 @@ def main():
                                     config_data.n = weight
                                     config_data.power = power
                                     config_data.direction = direction
-                                    config_data.speed = speed
+                                    config_data.speed = -304
                                     config_data.actual_speed = actual_speed
                                     config_data.cycle = m
                                     config_data.save()
