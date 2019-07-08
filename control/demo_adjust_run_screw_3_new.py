@@ -505,20 +505,18 @@ def main():
                         with open('adjust_screw_config.json', 'w') as f:
                             json.dump(config, f)
                 else:
-                    while True:
-                        print('initial...start...')
-                        z.speed_mode(400)
-                        if can_motors.weight_z > 1:
+                    print('initial...start...')
+                    z.speed_mode(400)
+                    if can_motors.weight_z > 1:
+                        record = Records()
+                        record.screw_type = screw_type
+                        record.speed = 304
+                        record.direction = 1
+                        record.current = can_motors.current if can_motors.current < 10000 else 0
+                        record.config_weight = weight
+                        record.start_time = get_current_time()
+                        while True:
                             can_motors.speed_mode(304)
-
-                            record = Records()
-                            record.screw_type = screw_type
-                            record.speed = 304
-                            record.direction = 1
-                            record.current = can_motors.current if can_motors.current < 10000 else 0
-                            record.config_weight = weight
-                            record.start_time = get_current_time()
-                            sleep(0.5)
 
                             if can_motors.weight > weight:
                                 z.speed_mode(0)
