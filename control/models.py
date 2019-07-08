@@ -28,7 +28,7 @@ class Records(models.Model):
     d_weight = models.FloatField(default=0)
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
-    total_time = models.IntegerField(default=0)
+    total_time = models.FloatField(default=0)
     actual_speed = models.FloatField(null=True, blank=True)
     is_settled = models.BooleanField(default=False)
     screw_type = models.CharField(max_length=128, blank=True, null=True)

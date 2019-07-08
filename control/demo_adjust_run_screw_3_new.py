@@ -387,7 +387,7 @@ def main():
         screw_type = 'test001'
 
         i += 1
-        print('iiiiiiiii', i)
+        # print('iiiiiiiii', i)
 
         if power == 1:
 
@@ -401,10 +401,10 @@ def main():
                     sleep(0.5)
 
                     if p != 1:
-                        print('ppppppp', p)
+                        # print('ppppppp', p)
                         break
                     elif r >= 5:
-                        print('p111111', p)
+                        # print('p111111', p)
                         break
                 settled_list = Records.objects.filter(screw_type='test001', is_settled=True).distinct() \
                     .aggregate(Avg('total_time'))
@@ -510,7 +510,6 @@ def main():
                         z.speed_mode(400)
                         if can_motors.weight_z > 1:
                             can_motors.speed_mode(304)
-                            sleep(0.5)
 
                             record = Records()
                             record.screw_type = screw_type
@@ -519,6 +518,7 @@ def main():
                             record.current = can_motors.current if can_motors.current < 10000 else 0
                             record.config_weight = weight
                             record.start_time = get_current_time()
+                            sleep(0.5)
 
                             if can_motors.weight > weight:
                                 z.speed_mode(0)
@@ -531,6 +531,7 @@ def main():
                                 record.end_time = get_current_time()
                                 record.total_time = (record.end_time - record.start_time).total_seconds()
                                 record.save()
+                                print('record.total_time$$$$$$$$$$$$', record.total_time)
 
                                 if can_motors.weight - weight > 3:
                                     print('initial...up...')
@@ -586,8 +587,8 @@ def main():
                                     print('initial...again...')
                                 break
 
-        else:
-            print('stand by...')
+        # else:
+        #     print('stand by...')
 
 
 if __name__ == "__main__":
