@@ -455,8 +455,6 @@ def main():
                                 record.total_time = (record.end_time - record.start_time).total_seconds()
                                 if record.total_time - avg_time > 0.5:
                                     record.total_time = 0
-                                record.save()
-                                can_motors.weight = 0
                                 print('record.total_time&&&&&&&&&&&&&&', record.total_time)
 
                                 if record.d_weight > 3:
@@ -469,60 +467,66 @@ def main():
 
                                             with open('adjust_screw_config.json', 'r') as f:
                                                 config = json.load(f)
+                                                power = 0
                                             config.update({'power': 0})
                                             with open('adjust_screw_config.json', 'w') as f:
                                                 json.dump(config, f)
                                             break
+                                    record.save()
                                     can_motors.weight = 0
 
-                                if record.d_weight > 1 and actual_speed > 5:
-                                    actual_speed -= 5
-                                # if record.d_weight < 1:
-                                #     record.is_settled = True
-                                #     print('settled...')
-                                #     actual_speed += 5
-                                else:
-                                    record.is_settled = True
-                                    print('settled...')
+                                if power == 1:
 
-                                print('here here...')
-                                sleep(4.5)
-                                # reverse
-                                can_motors.speed_mode(-speed1)
-                                z.speed_mode(-speed2)
+                                    if record.d_weight > 1 and actual_speed > 5:
+                                        actual_speed -= 5
+                                    # if record.d_weight < 1:
+                                    #     record.is_settled = True
+                                    #     print('settled...')
+                                    #     actual_speed += 5
+                                    else:
+                                        record.is_settled = True
+                                        print('settled...')
+                                    record.save()
+                                    can_motors.weight = 0
 
-                                record = Records()
-                                record.screw_type = screw_type
-                                record.cycle = m
-                                record.speed = -speed1
-                                record.direction = -1
-                                record.current = can_motors.current if can_motors.current < 10000 else 0
-                                record.weight = can_motors.weight
-                                record.save()
+                                    print('here here...')
+                                    sleep(4.5)
+                                    # reverse
+                                    can_motors.speed_mode(-speed1)
+                                    z.speed_mode(-speed2)
 
-                                sleep(s_time)
-                                print('gaga')
+                                    record = Records()
+                                    record.screw_type = screw_type
+                                    record.cycle = m
+                                    record.speed = -speed1
+                                    record.direction = -1
+                                    record.current = can_motors.current if can_motors.current < 10000 else 0
+                                    record.weight = can_motors.weight
+                                    record.save()
 
-                                can_motors.speed_mode(0)
-                                can_motors.weight = 0
-                                z.speed_mode(-200)
-                                sleep(1.5)
-                                z.speed_mode(0)
-                                can_motors.weight_z = 0
+                                    sleep(s_time)
+                                    print('gaga')
 
-                                config_data = ScrewConfig()
-                                config_data.n = weight
-                                config_data.power = power
-                                config_data.direction = direction
-                                config_data.speed = -speed1
-                                config_data.actual_speed = actual_speed
-                                config_data.cycle = m
-                                config_data.save()
+                                    can_motors.speed_mode(0)
+                                    can_motors.weight = 0
+                                    z.speed_mode(-200)
+                                    sleep(1.5)
+                                    z.speed_mode(0)
+                                    can_motors.weight_z = 0
 
-                                print('end...')
-                                sleep(2)
+                                    config_data = ScrewConfig()
+                                    config_data.n = weight
+                                    config_data.power = power
+                                    config_data.direction = direction
+                                    config_data.speed = -speed1
+                                    config_data.actual_speed = actual_speed
+                                    config_data.cycle = m
+                                    config_data.save()
 
-                                print('again...')
+                                    print('end...')
+                                    sleep(2)
+
+                                    print('again...')
                     else:
                         print('run time too short!!!')
                         with open('adjust_screw_config.json', 'r') as f:
