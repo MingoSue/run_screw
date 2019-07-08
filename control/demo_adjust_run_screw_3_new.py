@@ -456,7 +456,7 @@ def main():
                                 record.d_weight = can_motors.weight - weight
                                 record.end_time = get_current_time()
                                 record.total_time = (record.end_time - record.start_time).total_seconds()
-                                if record.total_time - avg_time > 1:
+                                if record.total_time - avg_time > 0.5:
                                     record.total_time = 0
                                 record.save()
                                 can_motors.weight = 0
@@ -464,13 +464,13 @@ def main():
 
                                 if record.d_weight > 1 and actual_speed > 5:
                                     actual_speed -= 5
-                                if record.d_weight < 1:
-                                    record.is_settled = True
-                                    print('settled...')
-                                    actual_speed += 5
-                                # else:
+                                # if record.d_weight < 1:
                                 #     record.is_settled = True
                                 #     print('settled...')
+                                #     actual_speed += 5
+                                else:
+                                    record.is_settled = True
+                                    print('settled...')
 
                                 print('here here...')
                                 sleep(4.5)
@@ -544,7 +544,7 @@ def main():
                                 record.save()
                                 print('record.total_time$$$$$$$$$$$$', record.total_time)
 
-                                if can_motors.weight - weight > 3:
+                                if can_motors.weight - weight > 2:
                                     print('initial...up...')
                                     while True:
                                         z.speed_mode(-speed2)
@@ -560,6 +560,8 @@ def main():
                                             break
                                     can_motors.weight = 0
                                 else:
+                                    print('initial...here here...')
+                                    sleep(4.5)
                                     # reverse
                                     print('initial...haha...')
                                     can_motors.speed_mode(-speed1)
