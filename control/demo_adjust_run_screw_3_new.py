@@ -1,4 +1,4 @@
-# xz轴第五版,xz轴变为速度模式,添加限位和z轴传感器,记录运行数据,自学习
+# xz轴第六版,xz轴变为速度模式,添加限位和z轴传感器,记录运行数据,自学习
 import os
 import pytz
 import sys
