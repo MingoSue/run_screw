@@ -348,26 +348,18 @@ def main():
     x.set_speed_level(3)
 
     can_motors = Motor('can0', 0x13)
-    n = 0
-    i = 0
+
+    p = 0
     # cycle times
     m = 0
 
     step = 0
     step_right = 0
-    total = 0
-    total_up = 0
-
-    p = 0
 
     man_position = 0
     man_cycle = 0
 
-    a_position = 1
     a_cycle = 1
-
-    speed = 0.9
-    direction = 1
 
     # try:
     #     with open('adjust_screw_config.json', 'r') as f:
@@ -385,7 +377,8 @@ def main():
     # speed2 should < 1000
     speed1 = 304
     speed2 = 500
-    settle_speed = 0
+    direction = 1
+
     while True:
 
         try:
@@ -396,15 +389,13 @@ def main():
             config = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 1, "auto": 1, "position": 0}
         # power 1 :on  0:off
         power = config['power']
-        weight = config['n']
-        weight_z = 1
-        d_weight = 1
         auto = config['auto']
         # default 0, values=1,2,3
         position = config['position']
 
-        # i += 1
-        # print('iiiiiiiii', i)
+        weight = config['n']
+        d_weight = 1
+        weight_z = 1
 
         if power == 1:
 
