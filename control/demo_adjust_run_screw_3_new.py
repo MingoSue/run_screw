@@ -517,7 +517,7 @@ def main():
                                     config_data.n = weight
                                     config_data.power = power
                                     config_data.direction = direction
-                                    config_data.speed = -speed1
+                                    config_data.speed = speed1
                                     config_data.actual_speed = actual_speed
                                     config_data.cycle = m
                                     config_data.save()
@@ -606,7 +606,7 @@ def main():
                                     config_data.n = weight
                                     config_data.power = power
                                     config_data.direction = direction
-                                    config_data.speed = -speed1
+                                    config_data.speed = speed1
                                     config_data.actual_speed = actual_speed
                                     config_data.cycle = m
                                     config_data.save()
