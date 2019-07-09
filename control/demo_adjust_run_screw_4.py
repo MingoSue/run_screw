@@ -368,7 +368,6 @@ def main():
 
     speed = 0.9
     direction = 1
-    actual_speed = 50
 
     # try:
     #     with open('adjust_screw_config.json', 'r') as f:
@@ -398,7 +397,8 @@ def main():
         # power 1 :on  0:off
         power = config['power']
         weight = config['n']
-        weight2 = 2
+        weight_z = 1
+        d_weight = 1
         auto = config['auto']
         # default 0, values=1,2,3
         position = config['position']
@@ -439,7 +439,7 @@ def main():
                         # first stage
                         print('start...')
                         z.speed_mode(speed2)
-                        if can_motors.weight_z > 1:
+                        if can_motors.weight_z > weight_z:
                             print('can_motors.weight_z===========', can_motors.weight_z)
                             record = Records()
                             record.screw_type = screw_type
@@ -492,7 +492,7 @@ def main():
 
                                 else:
 
-                                    if record.d_weight > 1 and actual_speed > 5:
+                                    if record.d_weight > d_weight and actual_speed > 5:
                                         actual_speed -= 5
                                     # if record.d_weight < 1:
                                     #     record.is_settled = True
@@ -616,7 +616,7 @@ def main():
                 else:
                     print('initial...start...')
                     z.speed_mode(speed2)
-                    if can_motors.weight_z > 1:
+                    if can_motors.weight_z > weight_z:
                         record = Records()
                         record.screw_type = screw_type
                         record.speed = speed1
@@ -749,7 +749,7 @@ def main():
                             # first stage
                             print('start...')
                             z.speed_mode(speed2)
-                            if can_motors.weight_z > 1:
+                            if can_motors.weight_z > weight_z:
                                 print('can_motors.weight_z===========', can_motors.weight_z)
                                 record = Records()
                                 record.screw_type = screw_type
@@ -802,7 +802,7 @@ def main():
 
                                     else:
 
-                                        if record.d_weight > 1 and actual_speed > 5:
+                                        if record.d_weight > d_weight and actual_speed > 5:
                                             actual_speed -= 5
                                         # if record.d_weight < 1:
                                         #     record.is_settled = True
@@ -854,7 +854,7 @@ def main():
                     else:
                         print('initial...start...')
                         z.speed_mode(speed2)
-                        if can_motors.weight_z > 1:
+                        if can_motors.weight_z > weight_z:
                             record = Records()
                             record.screw_type = screw_type
                             record.speed = speed1
@@ -977,7 +977,7 @@ def main():
                             # first stage
                             print('start...')
                             z.speed_mode(speed2)
-                            if can_motors.weight_z > 1:
+                            if can_motors.weight_z > weight_z:
                                 print('can_motors.weight_z===========', can_motors.weight_z)
                                 record = Records()
                                 record.screw_type = screw_type
@@ -1030,7 +1030,7 @@ def main():
 
                                     else:
 
-                                        if record.d_weight > 1 and actual_speed > 5:
+                                        if record.d_weight > d_weight and actual_speed > 5:
                                             actual_speed -= 5
                                         # if record.d_weight < 1:
                                         #     record.is_settled = True
@@ -1082,7 +1082,7 @@ def main():
                     else:
                         print('initial...start...')
                         z.speed_mode(speed2)
-                        if can_motors.weight_z > 1:
+                        if can_motors.weight_z > weight_z:
                             record = Records()
                             record.screw_type = screw_type
                             record.speed = speed1
@@ -1205,7 +1205,7 @@ def main():
                             # first stage
                             print('start...')
                             z.speed_mode(speed2)
-                            if can_motors.weight_z > 1:
+                            if can_motors.weight_z > weight_z:
                                 print('can_motors.weight_z===========', can_motors.weight_z)
                                 record = Records()
                                 record.screw_type = screw_type
@@ -1258,7 +1258,7 @@ def main():
 
                                     else:
 
-                                        if record.d_weight > 1 and actual_speed > 5:
+                                        if record.d_weight > d_weight and actual_speed > 5:
                                             actual_speed -= 5
                                         # if record.d_weight < 1:
                                         #     record.is_settled = True
@@ -1310,7 +1310,7 @@ def main():
                     else:
                         print('initial...start...')
                         z.speed_mode(speed2)
-                        if can_motors.weight_z > 1:
+                        if can_motors.weight_z > weight_z:
                             record = Records()
                             record.screw_type = screw_type
                             record.speed = speed1
