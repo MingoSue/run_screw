@@ -370,8 +370,7 @@ def main():
               "screw_type": "test001"}
     screw_type = config['screw_type']
 
-    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct() \
-        .order_by('-actual_speed')
+    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct().order_by('-actual_speed')
     actual_speed = int(settled_list[0].actual_speed) if settled_list else 50
 
     # speed2 should < 1000
