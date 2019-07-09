@@ -245,7 +245,7 @@ def poweroff():
         json.dump(config, f)
 
 
-class MotorY:
+class MotorX:
     # None for direction ,0x23 => 1  0x24 => -1
     run_data = [0x00, 0x20, None, 0x00, 0x00, 0x00, 0x00, 0x03]
     stop_data = [0x00, 0x20, 0x25, 0x00, 0x00, 0x00, 0x00, 0x01]
@@ -343,9 +343,9 @@ class MotorZ:
 
 
 def main():
-    y = MotorY('can0', 0xc1)
+    x = MotorX('can0', 0xc1)
     z = MotorZ('can0', 0xc2)
-    y.set_speed_level(3)
+    x.set_speed_level(3)
 
     can_motors = Motor('can0', 0x13)
     n = 0
@@ -542,7 +542,7 @@ def main():
                                 power = config['power']
                                 auto = config['auto']
                                 if power == 1 and auto == 1:
-                                    y.run(4800, -1)
+                                    x.run(4800, -1)
                                     sleep(2)
                                     step_right += 1
                                     if a_cycle == 3:
@@ -581,7 +581,7 @@ def main():
 
                                 auto = config['auto']
                                 if power == 1 and auto == 1:
-                                    y.run(4800, 1)
+                                    x.run(4800, 1)
                                     step += 1
                                     if a_cycle == 1:
                                         a_cycle = 2
@@ -687,11 +687,11 @@ def main():
             else:
                 # 关闭自动模式后的复位
                 if a_cycle == 2:
-                    y.run(4800, -1)
+                    x.run(4800, -1)
                     a_cycle = 1
                     step = 0
                 elif a_cycle == 3:
-                    y.run(9600, -1)
+                    x.run(9600, -1)
                     a_cycle = 1
                     step = 0
                 sleep(1)
@@ -699,10 +699,10 @@ def main():
                 # 位置1
                 if position == 1 and man_cycle != 1:
                     if man_position == 4800:
-                        y.run(4800, -1)
+                        x.run(4800, -1)
                         man_position -= 4800
                     elif man_position == 9600:
-                        y.run(9600, -1)
+                        x.run(9600, -1)
                         man_position -= 9600
                     sleep(1)
                     # pre-start
@@ -927,10 +927,10 @@ def main():
                 # 位置2
                 if position == 2 and man_cycle != 2:
                     if man_position == 0:
-                        y.run(4800, 1)
+                        x.run(4800, 1)
                         man_position += 4800
                     elif man_position == 9600:
-                        y.run(4800, -1)
+                        x.run(4800, -1)
                         man_position -= 4800
                     sleep(1)
                     # pre-start
@@ -1155,10 +1155,10 @@ def main():
                 # 位置3
                 if position == 3 and man_cycle != 3:
                     if man_position == 0:
-                        y.run(9600, 1)
+                        x.run(9600, 1)
                         man_position += 9600
                     elif man_position == 4800:
-                        y.run(4800, 1)
+                        x.run(4800, 1)
                         man_position += 4800
                     sleep(1)
                     # pre-start

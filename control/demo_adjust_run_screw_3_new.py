@@ -245,7 +245,7 @@ def poweroff():
         json.dump(config, f)
 
 
-class MotorY:
+class MotorX:
     # None for direction ,0x23 => 1  0x24 => -1
     run_data = [0x00, 0x20, None, 0x00, 0x00, 0x00, 0x00, 0x03]
     stop_data = [0x00, 0x20, 0x25, 0x00, 0x00, 0x00, 0x00, 0x01]
@@ -343,9 +343,9 @@ class MotorZ:
 
 
 def main():
-    y = MotorY('can0', 0xc1)
+    x = MotorX('can0', 0xc1)
     z = MotorZ('can0', 0xc2)
-    y.set_speed_level(3)
+    x.set_speed_level(3)
 
     can_motors = Motor('can0', 0x13)
     n = 0
