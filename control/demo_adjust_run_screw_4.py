@@ -369,6 +369,20 @@ def main():
     speed = 0.9
     direction = 1
     actual_speed = 50
+
+    # try:
+    #     with open('adjust_screw_config.json', 'r') as f:
+    #         config = json.load(f)
+    # except Exception as e:
+    #     print('config error', e)
+    config = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 1, "auto": 1, "position": 0,
+              "screw_type": "test001"}
+    screw_type = config['screw_type']
+
+    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct() \
+        .order_by('-actual_speed')
+    actual_speed = settled_list[0].actual_speed if settled_list else 50
+
     # speed2 should < 1000
     speed1 = 304
     speed2 = 500
@@ -388,7 +402,6 @@ def main():
         auto = config['auto']
         # default 0, values=1,2,3
         position = config['position']
-        screw_type = 'test001'
 
         # i += 1
         # print('iiiiiiiii', i)
@@ -408,14 +421,14 @@ def main():
                         break
                     elif r >= 5:
                         break
-                settled_list = Records.objects.filter(screw_type='test001', is_settled=True).distinct() \
+                settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct() \
                     .aggregate(Avg('total_time'))
                 if settled_list['total_time__avg']:
                     avg_time = settled_list['total_time__avg']
                     print('%%%%%%%%%%%%%avg_time', avg_time)
                 else:
                     record_list = Records.objects.filter(direction=1, d_weight__gt=0, total_time__gt=0,
-                                                         screw_type='test001').distinct().aggregate(Avg('total_time'))
+                                                         screw_type=screw_type).distinct().aggregate(Avg('total_time'))
                     print('record_list==========', record_list)
                     avg_time = record_list['total_time__avg'] if record_list['total_time__avg'] else 0.0
                 if avg_time != 0.0:
@@ -717,14 +730,14 @@ def main():
                             break
                         elif r >= 5:
                             break
-                    settled_list = Records.objects.filter(screw_type='test001', is_settled=True).distinct() \
+                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct() \
                         .aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
                     else:
                         record_list = Records.objects.filter(direction=1, d_weight__gt=0, total_time__gt=0,
-                                                             screw_type='test001').distinct().aggregate(
+                                                             screw_type=screw_type).distinct().aggregate(
                             Avg('total_time'))
                         print('record_list==========', record_list)
                         avg_time = record_list['total_time__avg'] if record_list['total_time__avg'] else 0.0
@@ -945,14 +958,14 @@ def main():
                             break
                         elif r >= 5:
                             break
-                    settled_list = Records.objects.filter(screw_type='test001', is_settled=True).distinct() \
+                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct() \
                         .aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
                     else:
                         record_list = Records.objects.filter(direction=1, d_weight__gt=0, total_time__gt=0,
-                                                             screw_type='test001').distinct().aggregate(
+                                                             screw_type=screw_type).distinct().aggregate(
                             Avg('total_time'))
                         print('record_list==========', record_list)
                         avg_time = record_list['total_time__avg'] if record_list['total_time__avg'] else 0.0
@@ -1173,14 +1186,14 @@ def main():
                             break
                         elif r >= 5:
                             break
-                    settled_list = Records.objects.filter(screw_type='test001', is_settled=True).distinct() \
+                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct() \
                         .aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
                     else:
                         record_list = Records.objects.filter(direction=1, d_weight__gt=0, total_time__gt=0,
-                                                             screw_type='test001').distinct().aggregate(
+                                                             screw_type=screw_type).distinct().aggregate(
                             Avg('total_time'))
                         print('record_list==========', record_list)
                         avg_time = record_list['total_time__avg'] if record_list['total_time__avg'] else 0.0
