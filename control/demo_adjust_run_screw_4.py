@@ -350,6 +350,7 @@ def main():
     can_motors = Motor('can0', 0x13)
 
     p = 0
+    q = 0
     # cycle times
     m = 0
 
@@ -698,7 +699,6 @@ def main():
                     x.run(9600, -1)
                     a_cycle = 1
                     step = 0
-                sleep(1)
 
                 # 位置1
                 if position == 1 and man_cycle != 1:
@@ -711,13 +711,13 @@ def main():
                     sleep(1)
                     # pre-start
                     r = 0
-                    p += 1
+                    q += 1
                     while True:
                         r += 1
                         can_motors.speed_mode(0)
                         sleep(0.5)
 
-                        if p != 1:
+                        if q != 1:
                             break
                         elif r >= 5:
                             break
@@ -841,6 +841,7 @@ def main():
 
                                         print('cycle...end...')
                                         sleep(2)
+                                    man_cycle = 1
                     # 首次运行
                     else:
                         print('initial...start...')
@@ -926,7 +927,7 @@ def main():
 
                                         print('initial...again...')
                                     break
-                    man_cycle = 1
+                            man_cycle = 1
 
                 # 位置2
                 if position == 2 and man_cycle != 2:
@@ -939,13 +940,13 @@ def main():
                     sleep(1)
                     # pre-start
                     r = 0
-                    p += 1
+                    q += 1
                     while True:
                         r += 1
                         can_motors.speed_mode(0)
                         sleep(0.5)
 
-                        if p != 1:
+                        if q != 1:
                             break
                         elif r >= 5:
                             break
@@ -1069,6 +1070,7 @@ def main():
 
                                         print('cycle...end...')
                                         sleep(2)
+                                    man_cycle = 2
                     # 首次运行
                     else:
                         print('initial...start...')
@@ -1154,7 +1156,7 @@ def main():
 
                                         print('initial...again...')
                                     break
-                    man_cycle = 2
+                            man_cycle = 2
 
                 # 位置3
                 if position == 3 and man_cycle != 3:
@@ -1167,13 +1169,13 @@ def main():
                     sleep(1)
                     # pre-start
                     r = 0
-                    p += 1
+                    q += 1
                     while True:
                         r += 1
                         can_motors.speed_mode(0)
                         sleep(0.5)
 
-                        if p != 1:
+                        if q != 1:
                             break
                         elif r >= 5:
                             break
@@ -1297,6 +1299,7 @@ def main():
 
                                         print('cycle...end...')
                                         sleep(2)
+                                    man_cycle = 3
                     # 首次运行
                     else:
                         print('initial...start...')
@@ -1382,7 +1385,7 @@ def main():
 
                                         print('initial...again...')
                                     break
-                    man_cycle = 3
+                            man_cycle = 3
         # else:
         #     print('stand by...')
 
