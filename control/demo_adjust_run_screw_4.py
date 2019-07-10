@@ -430,6 +430,8 @@ def main():
                         # first stage
                         print('start...')
                         z.speed_mode(speed2)
+                        # if auto == 1:
+                        # else z.speed_mode(0)
                         if can_motors.weight_z > weight_z:
                             print('can_motors.weight_z===========', can_motors.weight_z)
                             record = Records()
@@ -702,6 +704,7 @@ def main():
 
                 # 位置1
                 if position == 1 and man_cycle != 1:
+                    print('position...1...')
                     if man_position == 4800:
                         x.run(4800, -1)
                         man_position -= 4800
@@ -932,6 +935,7 @@ def main():
 
                 # 位置2
                 if position == 2 and man_cycle != 2:
+                    print('position...2...')
                     if man_position == 0:
                         x.run(4800, 1)
                         man_position += 4800
@@ -1162,6 +1166,7 @@ def main():
 
                 # 位置3
                 if position == 3 and man_cycle != 3:
+                    print('position...3...')
                     if man_position == 0:
                         x.run(9600, 1)
                         man_position += 9600
