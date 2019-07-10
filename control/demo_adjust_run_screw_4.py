@@ -564,16 +564,17 @@ def main():
                                         auto = config['auto']
                                         if power == 1 and auto == 1:
                                             # m1.run(4800, 1)
-                                            step = 1
+                                            step = 0
                                             step_right = 0
-                                            if a_cycle == 1:
-                                                a_cycle = 2
+                                            # if a_cycle == 1:
+                                            #     a_cycle = 2
                                         else:
                                             print('stand by...11111')
                                 else:
                                     print('stand by')
 
                             else:
+                                print('next...left...')
                                 try:
                                     with open('adjust_screw_config.json', 'r') as f:
                                         config = json.load(f)
