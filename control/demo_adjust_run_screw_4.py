@@ -412,8 +412,8 @@ def main():
                         break
                     elif r >= 5:
                         break
-                settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct() \
-                    .aggregate(Avg('total_time'))
+                settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True, total_time__gt=0) \
+                    .distinct().aggregate(Avg('total_time'))
                 if settled_list['total_time__avg']:
                     avg_time = settled_list['total_time__avg']
                     print('%%%%%%%%%%%%%avg_time', avg_time)
@@ -705,10 +705,11 @@ def main():
                     if man_position == 4800:
                         x.run(4800, -1)
                         man_position -= 4800
+                        sleep(1)
                     elif man_position == 9600:
                         x.run(9600, -1)
                         man_position -= 9600
-                    sleep(1)
+                        sleep(1)
                     # pre-start
                     r = 0
                     q += 1
@@ -721,8 +722,8 @@ def main():
                             break
                         elif r >= 5:
                             break
-                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct() \
-                        .aggregate(Avg('total_time'))
+                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True, total_time__gt=0) \
+                        .distinct().aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
@@ -934,10 +935,11 @@ def main():
                     if man_position == 0:
                         x.run(4800, 1)
                         man_position += 4800
+                        sleep(1)
                     elif man_position == 9600:
                         x.run(4800, -1)
                         man_position -= 4800
-                    sleep(1)
+                        sleep(1)
                     # pre-start
                     r = 0
                     q += 1
@@ -950,8 +952,8 @@ def main():
                             break
                         elif r >= 5:
                             break
-                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct() \
-                        .aggregate(Avg('total_time'))
+                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True, total_time__gt=0) \
+                        .distinct().aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
@@ -1163,10 +1165,11 @@ def main():
                     if man_position == 0:
                         x.run(9600, 1)
                         man_position += 9600
+                        sleep(1)
                     elif man_position == 4800:
                         x.run(4800, 1)
                         man_position += 4800
-                    sleep(1)
+                        sleep(1)
                     # pre-start
                     r = 0
                     q += 1
@@ -1179,8 +1182,8 @@ def main():
                             break
                         elif r >= 5:
                             break
-                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct() \
-                        .aggregate(Avg('total_time'))
+                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True, total_time__gt=0) \
+                        .distinct().aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
