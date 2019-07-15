@@ -1,4 +1,4 @@
-# xyz轴第一版
+# xyz轴第一版,顺时针循环,记录运行数据,自学习,多颗螺丝,自动模式
 import os
 import pytz
 import sys
@@ -345,7 +345,11 @@ class MotorZ:
 def main():
     x = MotorX('can0', 0xc1)
     z = MotorZ('can0', 0xc2)
+    y = MotorX('can0', 0xc3)
     x.set_speed_level(3)
+    y.set_speed_level(3)
+    x_step = 4800
+    y_step = 48300
 
     can_motors = Motor('can0', 0x13)
 
@@ -356,11 +360,17 @@ def main():
 
     step = 0
     step_right = 0
+    step_add = 2500
+
+    step_f = 0
+    step_b = 0
 
     man_position = 0
     man_cycle = 0
 
     a_cycle = 1
+    f_cycle = 0
+    b_cycle = 0
 
     # try:
     #     with open('adjust_screw_config.json', 'r') as f:
@@ -535,9 +545,29 @@ def main():
                                     sleep(2)
 
                                     print('again...')
+                                    if step >= 2 and step_b == 1:
+                                        step_f = 1
+                                    if step < 2 and f_cycle == 0:
+                                        b_cycle = 0
 
                             # sleep(2)
                             if step >= 2:
+                                print('step_b///////////', step_b)
+                                try:
+                                    with open('adjust_screw_config.json', 'r') as f:
+                                        config = json.load(f)
+                                except:
+                                    continue
+                                # power 1 :on  0:off
+                                power = config['power']
+                                auto = config['auto']
+                                if power == 1 and auto == 1 and step_b == 0:
+                                    x.run(step_add, 1)
+                                    sleep(1.5)
+                                    y.run(y_step, -1)
+                                    sleep(3)
+                                    step_b = 1
+
                                 print('step_right///////////', step_right)
                                 try:
                                     with open('adjust_screw_config.json', 'r') as f:
@@ -547,8 +577,8 @@ def main():
                                 # power 1 :on  0:off
                                 power = config['power']
                                 auto = config['auto']
-                                if power == 1 and auto == 1:
-                                    x.run(4800, -1)
+                                if power == 1 and auto == 1 and step_b == 1 and step_f == 1:
+                                    x.run(x_step, -1)
                                     sleep(2)
                                     step_right += 1
                                     if a_cycle == 3:
@@ -566,9 +596,14 @@ def main():
                                         power = config['power']
                                         auto = config['auto']
                                         if power == 1 and auto == 1:
-                                            # m1.run(4800, 1)
+                                            # m1.run(x_step, 1)
                                             step = 0
                                             step_right = 0
+
+                                            step_f = 0
+                                            step_b = 0
+                                            f_cycle = 1
+                                            b_cycle = 1
                                             # if a_cycle == 1:
                                             #     a_cycle = 2
                                         else:
@@ -577,6 +612,22 @@ def main():
                                     print('stand by')
 
                             else:
+                                print('step_f///////////', step_f)
+                                try:
+                                    with open('adjust_screw_config.json', 'r') as f:
+                                        config = json.load(f)
+                                except:
+                                    continue
+                                # power 1 :on  0:off
+                                power = config['power']
+                                auto = config['auto']
+                                if power == 1 and auto == 1 and f_cycle == 1:
+                                    x.run(step_add, -1)
+                                    sleep(1.5)
+                                    y.run(y_step, 1)
+                                    sleep(3)
+                                    f_cycle = 0
+
                                 print('next...left...')
                                 try:
                                     with open('adjust_screw_config.json', 'r') as f:
@@ -587,8 +638,8 @@ def main():
                                 power = config['power']
 
                                 auto = config['auto']
-                                if power == 1 and auto == 1:
-                                    x.run(4800, 1)
+                                if power == 1 and auto == 1 and f_cycle == 0 and b_cycle == 0:
+                                    x.run(x_step, 1)
                                     step += 1
                                     if a_cycle == 1:
                                         a_cycle = 2
@@ -694,24 +745,24 @@ def main():
             else:
                 # 关闭自动模式后的复位
                 if a_cycle == 2:
-                    x.run(4800, -1)
+                    x.run(x_step, -1)
                     a_cycle = 1
                     step = 0
                 elif a_cycle == 3:
-                    x.run(9600, -1)
+                    x.run(x_step * 2, -1)
                     a_cycle = 1
                     step = 0
 
                 # 位置1
                 if position == 1 and man_cycle != 1:
                     print('position...1...')
-                    if man_position == 4800:
-                        x.run(4800, -1)
-                        man_position -= 4800
+                    if man_position == x_step:
+                        x.run(x_step, -1)
+                        man_position -= x_step
                         sleep(1)
-                    elif man_position == 9600:
-                        x.run(9600, -1)
-                        man_position -= 9600
+                    elif man_position == x_step * 2:
+                        x.run(x_step * 2, -1)
+                        man_position -= x_step * 2
                         sleep(1)
                     # pre-start
                     r = 0
@@ -937,12 +988,12 @@ def main():
                 if position == 2 and man_cycle != 2:
                     print('position...2...')
                     if man_position == 0:
-                        x.run(4800, 1)
-                        man_position += 4800
+                        x.run(x_step, 1)
+                        man_position += x_step
                         sleep(1)
-                    elif man_position == 9600:
-                        x.run(4800, -1)
-                        man_position -= 4800
+                    elif man_position == x_step * 2:
+                        x.run(x_step, -1)
+                        man_position -= x_step
                         sleep(1)
                     # pre-start
                     r = 0
@@ -1168,12 +1219,12 @@ def main():
                 if position == 3 and man_cycle != 3:
                     print('position...3...')
                     if man_position == 0:
-                        x.run(9600, 1)
-                        man_position += 9600
+                        x.run(x_step * 2, 1)
+                        man_position += x_step * 2
                         sleep(1)
-                    elif man_position == 4800:
-                        x.run(4800, 1)
-                        man_position += 4800
+                    elif man_position == x_step:
+                        x.run(x_step, 1)
+                        man_position += x_step
                         sleep(1)
                     # pre-start
                     r = 0
