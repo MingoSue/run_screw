@@ -377,9 +377,9 @@ def main():
     #         config = json.load(f)
     # except Exception as e:
     #     print('config error', e)
-    config = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 1, "auto": 1, "position": 0,
-              "screw_type": "test001"}
-    screw_type = config['screw_type']
+    config_1 = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 1, "auto": 1, "position": 0,
+                "screw_type": "test001"}
+    screw_type = config_1['screw_type']
 
     settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct().order_by('-actual_speed')
     actual_speed = int(settled_list[0].actual_speed) if settled_list else 50
