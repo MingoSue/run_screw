@@ -346,31 +346,43 @@ def main():
     x = MotorX('can0', 0xc1)
     z = MotorZ('can0', 0xc2)
     y = MotorX('can0', 0xc3)
+
+    # 设置xy轴运行速度等级
     x.set_speed_level(3)
     y.set_speed_level(3)
+
+    # xy轴固定运行步数
     x_step = 4800
     y_step = 48300
+    # x轴调整步数
+    step_add = 2500
 
     can_motors = Motor('can0', 0x13)
 
+    # 手/自动模式待机状态参数
     p = 0
     q = 0
-    # cycle times
+
+    # 循环次数
     m = 0
 
+    # x轴左右移动位置参数
     step = 0
     step_right = 0
-    step_add = 2500
 
+    # y轴向后运动信号变量
     step_f = 0
     step_b = 0
+    # y轴向前运动信号变量
+    f_cycle = 0
+    b_cycle = 0
 
+    # 手动模式位置参数
     man_position = 0
     man_cycle = 0
 
+    # 自动模式复位参数，标示关闭自动后螺丝所在位置
     a_cycle = 1
-    f_cycle = 0
-    b_cycle = 0
 
     # try:
     #     with open('adjust_screw_config.json', 'r') as f:
@@ -379,14 +391,18 @@ def main():
     #     print('config error', e)
     config_1 = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 1, "auto": 1, "position": 0,
                 "screw_type": "test001"}
+    # 当前螺丝名称/型号
     screw_type = config_1['screw_type']
 
+    # 当前螺丝名称/型号所对应的最优缓冲速度
     settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True).distinct().order_by('-actual_speed')
     actual_speed = int(settled_list[0].actual_speed) if settled_list else 50
 
-    # speed2 should < 1000
+    # 螺丝刀运行速度
     speed1 = 304
+    # z轴相应的运行速度，speed2 should < 1000
     speed2 = 500
+
     direction = 1
 
     while True:
