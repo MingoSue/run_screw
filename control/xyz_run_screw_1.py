@@ -391,7 +391,7 @@ def main():
     #         config = json.load(f)
     # except Exception as e:
     #     print('config error', e)
-    config_1 = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 1, "auto": 1, "position": 0,
+    config_1 = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 0, "auto": 0, "position": 0,
                 "screw_type": "test001"}
     # 当前螺丝名称/型号
     screw_type = config_1['screw_type']
@@ -414,7 +414,7 @@ def main():
                 config = json.load(f)
         except Exception as e:
             print('config error', e)
-            config = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 1, "auto": 1, "position": 0}
+            config = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 0, "auto": 0, "position": 0}
         # power 1 :on  0:off
         power = config['power']
         auto = config['auto']
