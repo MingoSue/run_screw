@@ -378,13 +378,13 @@ def main():
     b_cycle = 0
 
     # 手动模式位置参数
-    man_position = 0
     man_cycle = 0
     y_position = 0
     has_run = 0
 
-    # 自动模式复位参数，标示关闭自动后螺丝所在位置
+    # 自动模式复位参数，标示关闭自动后螺丝所在位置[1(6),2(5),3(4)]
     a_cycle = 1
+    y_cycle = 0
 
     # try:
     #     with open('adjust_screw_config.json', 'r') as f:
@@ -585,6 +585,7 @@ def main():
                                     y.run(y_step, -1)
                                     sleep(3)
                                     step_b = 1
+                                    y_cycle = 1
 
                                 print('step_right///////////', step_right)
                                 try:
@@ -645,6 +646,7 @@ def main():
                                     y.run(y_step, 1)
                                     sleep(3)
                                     f_cycle = 0
+                                    y_cycle = 0
 
                                 print('next...left...')
                                 try:
@@ -762,6 +764,10 @@ def main():
             # 手动
             else:
                 # 关闭自动模式后的复位
+                if y_cycle == 1:
+                    y.run(y_step, 1)
+                    # sleep(3)
+                    y_cycle = 0
                 if a_cycle == 2:
                     x.run(x_step, -1)
                     a_cycle = 1
