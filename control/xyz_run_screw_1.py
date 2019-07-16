@@ -391,7 +391,7 @@ def main():
     #         config = json.load(f)
     # except Exception as e:
     #     print('config error', e)
-    config_1 = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 0, "auto": 0, "position": 0,
+    config_1 = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 1, "power": 0, "auto": 0, "position": 0,
                 "screw_type": "test001"}
     # 当前螺丝名称/型号
     screw_type = config_1['screw_type']
@@ -414,7 +414,7 @@ def main():
                 config = json.load(f)
         except Exception as e:
             print('config error', e)
-            config = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 2, "power": 0, "auto": 0, "position": 0}
+            config = {"speed": 1, "speed2": 350, "direction": 1, "n": 1, "n2": 1, "power": 0, "auto": 0, "position": 0}
         # power 1 :on  0:off
         power = config['power']
         auto = config['auto']
@@ -500,6 +500,19 @@ def main():
                                         z.speed_mode(-speed2)
                                         if can_motors.up_limit == 1:
                                             z.speed_mode(0)
+                                            # 复位
+                                            if y_cycle == 1:
+                                                y.run(y_step, 1)
+                                                # sleep(3)
+                                                y_cycle = 0
+                                            if a_cycle == 2:
+                                                x.run(x_step, -1)
+                                                a_cycle = 1
+                                                step = 0
+                                            elif a_cycle == 3:
+                                                x.run(x_step * 2, -1)
+                                                a_cycle = 1
+                                                step = 0
                                             print('cycle...stop...')
 
                                             with open('adjust_screw_config.json', 'r') as f:
@@ -711,6 +724,19 @@ def main():
                                         z.speed_mode(-speed2)
                                         if can_motors.up_limit == 1:
                                             z.speed_mode(0)
+                                            # 复位
+                                            if y_cycle == 1:
+                                                y.run(y_step, 1)
+                                                # sleep(3)
+                                                y_cycle = 0
+                                            if a_cycle == 2:
+                                                x.run(x_step, -1)
+                                                a_cycle = 1
+                                                step = 0
+                                            elif a_cycle == 3:
+                                                x.run(x_step * 2, -1)
+                                                a_cycle = 1
+                                                step = 0
                                             print('initial...stop...')
 
                                             with open('adjust_screw_config.json', 'r') as f:
@@ -851,6 +877,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('cycle...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -948,6 +987,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('initial...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1082,6 +1134,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('cycle...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1184,6 +1249,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('initial...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1326,6 +1404,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('cycle...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1427,6 +1518,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('initial...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1587,6 +1691,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('cycle...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1692,6 +1809,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('initial...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1856,6 +1986,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('cycle...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1961,6 +2104,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('initial...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -2125,6 +2281,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('cycle...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -2230,6 +2399,19 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
+                                                # 复位
+                                                if y_cycle == 1:
+                                                    y.run(y_step, 1)
+                                                    # sleep(3)
+                                                    y_cycle = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
                                                 print('initial...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
