@@ -378,7 +378,6 @@ def main():
     b_cycle = 0
 
     # 手动模式位置参数
-    man_cycle = 0
     y_position = 0
     has_run = 0
 
@@ -818,7 +817,7 @@ def main():
                         step = 0
 
                 # 位置1
-                if position == 1 and man_cycle != 1:
+                if position == 1:
                     print('position...1...')
                     # pre-start
                     r = 0
@@ -951,8 +950,13 @@ def main():
                                         config_data.save()
 
                                         print('cycle...end...')
+                                        with open('adjust_screw_config.json', 'r') as f:
+                                            config = json.load(f)
+                                        config.update({'position': 0})
+                                        with open('adjust_screw_config.json', 'w') as f:
+                                            json.dump(config, f)
+
                                         sleep(2)
-                                    man_cycle = 1
                     # 首次运行
                     else:
                         print('initial...start...')
@@ -1038,10 +1042,14 @@ def main():
 
                                         print('initial...again...')
                                     break
-                            man_cycle = 1
+                            with open('adjust_screw_config.json', 'r') as f:
+                                config = json.load(f)
+                            config.update({'position': 0})
+                            with open('adjust_screw_config.json', 'w') as f:
+                                json.dump(config, f)
 
                 # 位置2
-                if position == 2 and man_cycle != 2:
+                if position == 2:
                     print('position...2...')
                     if has_run == 0:
                         x.run(x_step, 1)
@@ -1189,13 +1197,18 @@ def main():
                                         config_data.save()
 
                                         print('cycle...end...')
+                                        with open('adjust_screw_config.json', 'r') as f:
+                                            config = json.load(f)
+                                        config.update({'position': 0})
+                                        with open('adjust_screw_config.json', 'w') as f:
+                                            json.dump(config, f)
+
                                         sleep(2)
                                     if has_run == 1:
                                         x.run(x_step, -1)
                                         has_run = 0
                                         sleep(1)
                                         a_cycle = 1
-                                    man_cycle = 2
 
                     # 首次运行
                     else:
@@ -1293,10 +1306,14 @@ def main():
                                 has_run = 0
                                 sleep(1)
                                 a_cycle = 1
-                            man_cycle = 2
+                            with open('adjust_screw_config.json', 'r') as f:
+                                config = json.load(f)
+                            config.update({'position': 0})
+                            with open('adjust_screw_config.json', 'w') as f:
+                                json.dump(config, f)
 
                 # 位置3
-                if position == 3 and man_cycle != 3:
+                if position == 3:
                     print('position...3...')
                     if has_run == 0:
                         x.run(x_step * 2, 1)
@@ -1448,13 +1465,18 @@ def main():
                                         config_data.save()
 
                                         print('cycle...end...')
+                                        with open('adjust_screw_config.json', 'r') as f:
+                                            config = json.load(f)
+                                        config.update({'position': 0})
+                                        with open('adjust_screw_config.json', 'w') as f:
+                                            json.dump(config, f)
+
                                         sleep(2)
                                     if has_run == 1:
                                         x.run(x_step * 2, -1)
                                         has_run = 0
                                         sleep(1)
                                         a_cycle = 1
-                                    man_cycle = 3
                     # 首次运行
                     else:
                         print('initial...start...')
@@ -1551,10 +1573,14 @@ def main():
                                 has_run = 0
                                 sleep(1)
                                 a_cycle = 1
-                            man_cycle = 3
+                            with open('adjust_screw_config.json', 'r') as f:
+                                config = json.load(f)
+                            config.update({'position': 0})
+                            with open('adjust_screw_config.json', 'w') as f:
+                                json.dump(config, f)
 
                 # 位置4
-                if position == 4 and man_cycle != 4:
+                if position == 4:
                     if y_position == 0:
                         y.run(y_step, -1)
                         sleep(3)
@@ -1748,6 +1774,12 @@ def main():
                                         config_data.save()
 
                                         print('cycle...end...')
+                                        with open('adjust_screw_config.json', 'r') as f:
+                                            config = json.load(f)
+                                        config.update({'position': 0})
+                                        with open('adjust_screw_config.json', 'w') as f:
+                                            json.dump(config, f)
+
                                         sleep(2)
                                     if has_run == 1:
                                         x.run(x_step * 2 + step_add, -1)
@@ -1759,7 +1791,6 @@ def main():
                                         sleep(3)
                                         y_position = 0
                                         y_cycle = 0
-                                    man_cycle = 4
                     # 首次运行
                     else:
                         print('initial...start...')
@@ -1884,10 +1915,14 @@ def main():
                                 sleep(3)
                                 y_position = 0
                                 y_cycle = 0
-                            man_cycle = 4
+                            with open('adjust_screw_config.json', 'r') as f:
+                                config = json.load(f)
+                            config.update({'position': 0})
+                            with open('adjust_screw_config.json', 'w') as f:
+                                json.dump(config, f)
 
                 # 位置5
-                if position == 5 and man_cycle != 5:
+                if position == 5:
                     if y_position == 0:
                         y.run(y_step, -1)
                         sleep(3)
@@ -2081,6 +2116,12 @@ def main():
                                         config_data.save()
 
                                         print('cycle...end...')
+                                        with open('adjust_screw_config.json', 'r') as f:
+                                            config = json.load(f)
+                                        config.update({'position': 0})
+                                        with open('adjust_screw_config.json', 'w') as f:
+                                            json.dump(config, f)
+
                                         sleep(2)
                                     if has_run == 1:
                                         x.run(x_step + step_add, -1)
@@ -2092,7 +2133,6 @@ def main():
                                         sleep(3)
                                         y_position = 0
                                         y_cycle = 0
-                                    man_cycle = 5
                     # 首次运行
                     else:
                         print('initial...start...')
@@ -2217,10 +2257,14 @@ def main():
                                 sleep(3)
                                 y_position = 0
                                 y_cycle = 0
-                            man_cycle = 5
+                            with open('adjust_screw_config.json', 'r') as f:
+                                config = json.load(f)
+                            config.update({'position': 0})
+                            with open('adjust_screw_config.json', 'w') as f:
+                                json.dump(config, f)
 
                 # 位置6
-                if position == 6 and man_cycle != 6:
+                if position == 6:
                     if y_position == 0:
                         y.run(y_step, -1)
                         sleep(3)
@@ -2414,6 +2458,12 @@ def main():
                                         config_data.save()
 
                                         print('cycle...end...')
+                                        with open('adjust_screw_config.json', 'r') as f:
+                                            config = json.load(f)
+                                        config.update({'position': 0})
+                                        with open('adjust_screw_config.json', 'w') as f:
+                                            json.dump(config, f)
+
                                         sleep(2)
                                     if has_run == 1:
                                         x.run(step_add, -1)
@@ -2425,7 +2475,6 @@ def main():
                                         sleep(3)
                                         y_position = 0
                                         y_cycle = 0
-                                    man_cycle = 6
                     # 首次运行
                     else:
                         print('initial...start...')
@@ -2550,7 +2599,12 @@ def main():
                                 sleep(3)
                                 y_position = 0
                                 y_cycle = 0
-                            man_cycle = 6
+                            with open('adjust_screw_config.json', 'r') as f:
+                                config = json.load(f)
+                            config.update({'position': 0})
+                            with open('adjust_screw_config.json', 'w') as f:
+                                json.dump(config, f)
+
         # else:
         #     print('stand by...')
 
