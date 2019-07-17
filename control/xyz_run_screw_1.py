@@ -505,14 +505,28 @@ def main():
                                                 y.run(y_step, 1)
                                                 # sleep(3)
                                                 y_cycle = 0
-                                            if a_cycle == 2:
-                                                x.run(x_step, -1)
-                                                a_cycle = 1
-                                                step = 0
-                                            elif a_cycle == 3:
-                                                x.run(x_step * 2, -1)
-                                                a_cycle = 1
-                                                step = 0
+                                                if a_cycle == 2:
+                                                    x.run(x_step + step_add, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2 + step_add, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 1:
+                                                    x.run(step_add, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                            else:
+                                                if a_cycle == 2:
+                                                    x.run(x_step, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+                                                elif a_cycle == 3:
+                                                    x.run(x_step * 2, -1)
+                                                    a_cycle = 1
+                                                    step = 0
+
                                             print('cycle...stop...')
 
                                             with open('adjust_screw_config.json', 'r') as f:
@@ -724,19 +738,6 @@ def main():
                                         z.speed_mode(-speed2)
                                         if can_motors.up_limit == 1:
                                             z.speed_mode(0)
-                                            # 复位
-                                            if y_cycle == 1:
-                                                y.run(y_step, 1)
-                                                # sleep(3)
-                                                y_cycle = 0
-                                            if a_cycle == 2:
-                                                x.run(x_step, -1)
-                                                a_cycle = 1
-                                                step = 0
-                                            elif a_cycle == 3:
-                                                x.run(x_step * 2, -1)
-                                                a_cycle = 1
-                                                step = 0
                                             print('initial...stop...')
 
                                             with open('adjust_screw_config.json', 'r') as f:
@@ -794,14 +795,27 @@ def main():
                     y.run(y_step, 1)
                     # sleep(3)
                     y_cycle = 0
-                if a_cycle == 2:
-                    x.run(x_step, -1)
-                    a_cycle = 1
-                    step = 0
-                elif a_cycle == 3:
-                    x.run(x_step * 2, -1)
-                    a_cycle = 1
-                    step = 0
+                    if a_cycle == 2:
+                        x.run(x_step + step_add, -1)
+                        a_cycle = 1
+                        step = 0
+                    elif a_cycle == 3:
+                        x.run(x_step * 2 + step_add, -1)
+                        a_cycle = 1
+                        step = 0
+                    elif a_cycle == 1:
+                        x.run(step_add, -1)
+                        a_cycle = 1
+                        step = 0
+                else:
+                    if a_cycle == 2:
+                        x.run(x_step, -1)
+                        a_cycle = 1
+                        step = 0
+                    elif a_cycle == 3:
+                        x.run(x_step * 2, -1)
+                        a_cycle = 1
+                        step = 0
 
                 # 位置1
                 if position == 1 and man_cycle != 1:
@@ -877,19 +891,6 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
-                                                # 复位
-                                                if y_cycle == 1:
-                                                    y.run(y_step, 1)
-                                                    # sleep(3)
-                                                    y_cycle = 0
-                                                if a_cycle == 2:
-                                                    x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
-                                                    x.run(x_step * 2, -1)
-                                                    a_cycle = 1
-                                                    step = 0
                                                 print('cycle...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -987,19 +988,6 @@ def main():
                                             z.speed_mode(-speed2)
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
-                                                # 复位
-                                                if y_cycle == 1:
-                                                    y.run(y_step, 1)
-                                                    # sleep(3)
-                                                    y_cycle = 0
-                                                if a_cycle == 2:
-                                                    x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
-                                                    x.run(x_step * 2, -1)
-                                                    a_cycle = 1
-                                                    step = 0
                                                 print('initial...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1058,6 +1046,7 @@ def main():
                     if has_run == 0:
                         x.run(x_step, 1)
                         has_run = 1
+                        a_cycle = 2
                         sleep(1)
                     # elif man_position == x_step * 2:
                     #     x.run(x_step, -1)
@@ -1135,16 +1124,8 @@ def main():
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
                                                 # 复位
-                                                if y_cycle == 1:
-                                                    y.run(y_step, 1)
-                                                    # sleep(3)
-                                                    y_cycle = 0
                                                 if a_cycle == 2:
                                                     x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
-                                                    x.run(x_step * 2, -1)
                                                     a_cycle = 1
                                                     step = 0
                                                 print('cycle...stop...')
@@ -1250,16 +1231,8 @@ def main():
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
                                                 # 复位
-                                                if y_cycle == 1:
-                                                    y.run(y_step, 1)
-                                                    # sleep(3)
-                                                    y_cycle = 0
                                                 if a_cycle == 2:
                                                     x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
-                                                    x.run(x_step * 2, -1)
                                                     a_cycle = 1
                                                     step = 0
                                                 print('initial...stop...')
@@ -1324,6 +1297,7 @@ def main():
                     if has_run == 0:
                         x.run(x_step * 2, 1)
                         has_run = 1
+                        a_cycle = 3
                         sleep(1)
                     # if man_position == 0:
                     #     x.run(x_step * 2, 1)
@@ -1405,15 +1379,7 @@ def main():
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
                                                 # 复位
-                                                if y_cycle == 1:
-                                                    y.run(y_step, 1)
-                                                    # sleep(3)
-                                                    y_cycle = 0
-                                                if a_cycle == 2:
-                                                    x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
+                                                if a_cycle == 3:
                                                     x.run(x_step * 2, -1)
                                                     a_cycle = 1
                                                     step = 0
@@ -1519,15 +1485,7 @@ def main():
                                             if can_motors.up_limit == 1:
                                                 z.speed_mode(0)
                                                 # 复位
-                                                if y_cycle == 1:
-                                                    y.run(y_step, 1)
-                                                    # sleep(3)
-                                                    y_cycle = 0
-                                                if a_cycle == 2:
-                                                    x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
+                                                if a_cycle == 3:
                                                     x.run(x_step * 2, -1)
                                                     a_cycle = 1
                                                     step = 0
@@ -1593,10 +1551,12 @@ def main():
                         y.run(y_step, -1)
                         sleep(3)
                         y_position = 1
+                        y_cycle = 1
                     print('position...4...')
                     if has_run == 0:
                         x.run(x_step * 2 + step_add, 1)
                         has_run = 1
+                        a_cycle = 3
                         sleep(1)
                     # if man_position == 0:
                     #     x.run(x_step * 2 + step_add, 1)
@@ -1696,14 +1656,28 @@ def main():
                                                     y.run(y_step, 1)
                                                     # sleep(3)
                                                     y_cycle = 0
-                                                if a_cycle == 2:
-                                                    x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
-                                                    x.run(x_step * 2, -1)
-                                                    a_cycle = 1
-                                                    step = 0
+                                                    if a_cycle == 2:
+                                                        x.run(x_step + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2 + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 1:
+                                                        x.run(step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                else:
+                                                    if a_cycle == 2:
+                                                        x.run(x_step, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+
                                                 print('cycle...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1814,14 +1788,28 @@ def main():
                                                     y.run(y_step, 1)
                                                     # sleep(3)
                                                     y_cycle = 0
-                                                if a_cycle == 2:
-                                                    x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
-                                                    x.run(x_step * 2, -1)
-                                                    a_cycle = 1
-                                                    step = 0
+                                                    if a_cycle == 2:
+                                                        x.run(x_step + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2 + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 1:
+                                                        x.run(step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                else:
+                                                    if a_cycle == 2:
+                                                        x.run(x_step, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+
                                                 print('initial...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -1888,10 +1876,12 @@ def main():
                         y.run(y_step, -1)
                         sleep(3)
                         y_position = 1
+                        y_cycle = 1
                     print('position...5...')
                     if has_run == 0:
                         x.run(x_step + step_add, 1)
                         has_run = 1
+                        a_cycle = 2
                         sleep(1)
                     # if man_position == 0:
                     #     x.run(x_step + step_add, 1)
@@ -1991,14 +1981,28 @@ def main():
                                                     y.run(y_step, 1)
                                                     # sleep(3)
                                                     y_cycle = 0
-                                                if a_cycle == 2:
-                                                    x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
-                                                    x.run(x_step * 2, -1)
-                                                    a_cycle = 1
-                                                    step = 0
+                                                    if a_cycle == 2:
+                                                        x.run(x_step + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2 + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 1:
+                                                        x.run(step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                else:
+                                                    if a_cycle == 2:
+                                                        x.run(x_step, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+
                                                 print('cycle...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -2109,14 +2113,28 @@ def main():
                                                     y.run(y_step, 1)
                                                     # sleep(3)
                                                     y_cycle = 0
-                                                if a_cycle == 2:
-                                                    x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
-                                                    x.run(x_step * 2, -1)
-                                                    a_cycle = 1
-                                                    step = 0
+                                                    if a_cycle == 2:
+                                                        x.run(x_step + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2 + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 1:
+                                                        x.run(step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                else:
+                                                    if a_cycle == 2:
+                                                        x.run(x_step, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+
                                                 print('initial...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -2183,10 +2201,12 @@ def main():
                         y.run(y_step, -1)
                         sleep(3)
                         y_position = 1
+                        y_cycle = 1
                     print('position...6...')
                     if has_run == 0:
                         x.run(step_add, 1)
                         has_run = 1
+                        a_cycle = 1
                         sleep(1)
                     # if man_position == 0:
                     #     x.run(x_step + step_add, 1)
@@ -2286,14 +2306,28 @@ def main():
                                                     y.run(y_step, 1)
                                                     # sleep(3)
                                                     y_cycle = 0
-                                                if a_cycle == 2:
-                                                    x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
-                                                    x.run(x_step * 2, -1)
-                                                    a_cycle = 1
-                                                    step = 0
+                                                    if a_cycle == 2:
+                                                        x.run(x_step + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2 + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 1:
+                                                        x.run(step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                else:
+                                                    if a_cycle == 2:
+                                                        x.run(x_step, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+
                                                 print('cycle...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
@@ -2404,14 +2438,28 @@ def main():
                                                     y.run(y_step, 1)
                                                     # sleep(3)
                                                     y_cycle = 0
-                                                if a_cycle == 2:
-                                                    x.run(x_step, -1)
-                                                    a_cycle = 1
-                                                    step = 0
-                                                elif a_cycle == 3:
-                                                    x.run(x_step * 2, -1)
-                                                    a_cycle = 1
-                                                    step = 0
+                                                    if a_cycle == 2:
+                                                        x.run(x_step + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2 + step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 1:
+                                                        x.run(step_add, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                else:
+                                                    if a_cycle == 2:
+                                                        x.run(x_step, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+                                                    elif a_cycle == 3:
+                                                        x.run(x_step * 2, -1)
+                                                        a_cycle = 1
+                                                        step = 0
+
                                                 print('initial...stop...')
 
                                                 with open('adjust_screw_config.json', 'r') as f:
