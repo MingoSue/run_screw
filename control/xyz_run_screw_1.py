@@ -1046,7 +1046,7 @@ def main():
                     if has_run == 0:
                         x.run(x_step, 1)
                         has_run = 1
-                        a_cycle = 2
+                        # a_cycle = 2
                         sleep(1)
                     # elif man_position == x_step * 2:
                     #     x.run(x_step, -1)
@@ -1117,6 +1117,7 @@ def main():
                                         record.total_time = 0
                                     print('record.total_time&&&&&&&&&&&&&&', record.total_time)
 
+                                    a_cycle = 2
                                     if record.d_weight > 3:
                                         print('cycle...up...')
                                         while True:
@@ -1224,6 +1225,7 @@ def main():
                                     record.save()
                                     print('record.total_time$$$$$$$$$$$$', record.total_time)
 
+                                    a_cycle = 2
                                     if record.d_weight > 3:
                                         print('initial...up...')
                                         while True:
@@ -1297,7 +1299,7 @@ def main():
                     if has_run == 0:
                         x.run(x_step * 2, 1)
                         has_run = 1
-                        a_cycle = 3
+                        # a_cycle = 3
                         sleep(1)
                     # if man_position == 0:
                     #     x.run(x_step * 2, 1)
@@ -1372,6 +1374,7 @@ def main():
                                         record.total_time = 0
                                     print('record.total_time&&&&&&&&&&&&&&', record.total_time)
 
+                                    a_cycle = 3
                                     if record.d_weight > 3:
                                         print('cycle...up...')
                                         while True:
@@ -1478,6 +1481,7 @@ def main():
                                     record.save()
                                     print('record.total_time$$$$$$$$$$$$', record.total_time)
 
+                                    a_cycle = 3
                                     if record.d_weight > 3:
                                         print('initial...up...')
                                         while True:
@@ -1551,12 +1555,12 @@ def main():
                         y.run(y_step, -1)
                         sleep(3)
                         y_position = 1
-                        y_cycle = 1
+                        # y_cycle = 1
                     print('position...4...')
                     if has_run == 0:
                         x.run(x_step * 2 + step_add, 1)
                         has_run = 1
-                        a_cycle = 3
+                        # a_cycle = 3
                         sleep(1)
                     # if man_position == 0:
                     #     x.run(x_step * 2 + step_add, 1)
@@ -1645,6 +1649,8 @@ def main():
                                         record.total_time = 0
                                     print('record.total_time&&&&&&&&&&&&&&', record.total_time)
 
+                                    y_cycle = 1
+                                    a_cycle = 3
                                     if record.d_weight > 3:
                                         print('cycle...up...')
                                         while True:
@@ -1777,6 +1783,8 @@ def main():
                                     record.save()
                                     print('record.total_time$$$$$$$$$$$$', record.total_time)
 
+                                    y_cycle = 1
+                                    a_cycle = 3
                                     if record.d_weight > 3:
                                         print('initial...up...')
                                         while True:
@@ -1876,12 +1884,12 @@ def main():
                         y.run(y_step, -1)
                         sleep(3)
                         y_position = 1
-                        y_cycle = 1
+                        # y_cycle = 1
                     print('position...5...')
                     if has_run == 0:
                         x.run(x_step + step_add, 1)
                         has_run = 1
-                        a_cycle = 2
+                        # a_cycle = 2
                         sleep(1)
                     # if man_position == 0:
                     #     x.run(x_step + step_add, 1)
@@ -1970,6 +1978,8 @@ def main():
                                         record.total_time = 0
                                     print('record.total_time&&&&&&&&&&&&&&', record.total_time)
 
+                                    y_cycle = 1
+                                    a_cycle = 2
                                     if record.d_weight > 3:
                                         print('cycle...up...')
                                         while True:
@@ -2102,6 +2112,8 @@ def main():
                                     record.save()
                                     print('record.total_time$$$$$$$$$$$$', record.total_time)
 
+                                    y_cycle = 1
+                                    a_cycle = 2
                                     if record.d_weight > 3:
                                         print('initial...up...')
                                         while True:
@@ -2201,12 +2213,12 @@ def main():
                         y.run(y_step, -1)
                         sleep(3)
                         y_position = 1
-                        y_cycle = 1
+                        # y_cycle = 1
                     print('position...6...')
                     if has_run == 0:
                         x.run(step_add, 1)
                         has_run = 1
-                        a_cycle = 1
+                        # a_cycle = 1
                         sleep(1)
                     # if man_position == 0:
                     #     x.run(x_step + step_add, 1)
@@ -2295,6 +2307,8 @@ def main():
                                         record.total_time = 0
                                     print('record.total_time&&&&&&&&&&&&&&', record.total_time)
 
+                                    y_cycle = 1
+                                    a_cycle = 1
                                     if record.d_weight > 3:
                                         print('cycle...up...')
                                         while True:
@@ -2427,6 +2441,8 @@ def main():
                                     record.save()
                                     print('record.total_time$$$$$$$$$$$$', record.total_time)
 
+                                    y_cycle = 1
+                                    a_cycle = 1
                                     if record.d_weight > 3:
                                         print('initial...up...')
                                         while True:
