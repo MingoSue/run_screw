@@ -1194,6 +1194,7 @@ def main():
                                         x.run(x_step, -1)
                                         has_run = 0
                                         sleep(1)
+                                        a_cycle = 1
                                     man_cycle = 2
 
                     # 首次运行
@@ -1291,6 +1292,7 @@ def main():
                                 x.run(x_step, -1)
                                 has_run = 0
                                 sleep(1)
+                                a_cycle = 1
                             man_cycle = 2
 
                 # 位置3
@@ -1451,6 +1453,7 @@ def main():
                                         x.run(x_step * 2, -1)
                                         has_run = 0
                                         sleep(1)
+                                        a_cycle = 1
                                     man_cycle = 3
                     # 首次运行
                     else:
@@ -1547,6 +1550,7 @@ def main():
                                 x.run(x_step * 2, -1)
                                 has_run = 0
                                 sleep(1)
+                                a_cycle = 1
                             man_cycle = 3
 
                 # 位置4
@@ -1749,10 +1753,12 @@ def main():
                                         x.run(x_step * 2 + step_add, -1)
                                         has_run = 0
                                         sleep(1)
+                                        a_cycle = 1
                                     if y_position == 1:
                                         y.run(y_step, 1)
                                         sleep(3)
                                         y_position = 0
+                                        y_cycle = 0
                                     man_cycle = 4
                     # 首次运行
                     else:
@@ -1872,10 +1878,12 @@ def main():
                                 x.run(x_step * 2 + step_add, -1)
                                 has_run = 0
                                 sleep(1)
+                                a_cycle = 1
                             if y_position == 1:
                                 y.run(y_step, 1)
                                 sleep(3)
                                 y_position = 0
+                                y_cycle = 0
                             man_cycle = 4
 
                 # 位置5
@@ -2078,10 +2086,12 @@ def main():
                                         x.run(x_step + step_add, -1)
                                         has_run = 0
                                         sleep(1)
+                                        a_cycle = 1
                                     if y_position == 1:
                                         y.run(y_step, 1)
                                         sleep(3)
                                         y_position = 0
+                                        y_cycle = 0
                                     man_cycle = 5
                     # 首次运行
                     else:
@@ -2201,10 +2211,12 @@ def main():
                                 x.run(x_step + step_add, -1)
                                 has_run = 0
                                 sleep(1)
+                                a_cycle = 1
                             if y_position == 1:
                                 y.run(y_step, 1)
                                 sleep(3)
                                 y_position = 0
+                                y_cycle = 0
                             man_cycle = 5
 
                 # 位置6
@@ -2407,10 +2419,12 @@ def main():
                                         x.run(step_add, -1)
                                         has_run = 0
                                         sleep(1)
+                                        a_cycle = 1
                                     if y_position == 1:
                                         y.run(y_step, 1)
                                         sleep(3)
                                         y_position = 0
+                                        y_cycle = 0
                                     man_cycle = 6
                     # 首次运行
                     else:
@@ -2530,10 +2544,12 @@ def main():
                                 x.run(step_add, -1)
                                 has_run = 0
                                 sleep(1)
+                                a_cycle = 1
                             if y_position == 1:
                                 y.run(y_step, 1)
                                 sleep(3)
                                 y_position = 0
+                                y_cycle = 0
                             man_cycle = 6
         # else:
         #     print('stand by...')
