@@ -417,7 +417,7 @@ def main():
         # power 1 :on  0:off
         power = config['power']
         auto = config['auto']
-        # default 0, values=1,2,3
+        # default 0, values=1,2,3,4,5,6
         position = config['position']
 
         weight = config['n']
