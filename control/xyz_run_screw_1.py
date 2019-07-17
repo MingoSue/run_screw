@@ -439,8 +439,8 @@ def main():
                         break
                     elif r >= 5:
                         break
-                settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True, total_time__gt=0) \
-                    .distinct().aggregate(Avg('total_time'))
+                settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True,
+                                                      total_time__gt=0).distinct().aggregate(Avg('total_time'))
                 if settled_list['total_time__avg']:
                     avg_time = settled_list['total_time__avg']
                     print('%%%%%%%%%%%%%avg_time', avg_time)
@@ -641,7 +641,6 @@ def main():
                                         power = config['power']
                                         auto = config['auto']
                                         if power == 1 and auto == 1:
-                                            # m1.run(x_step, 1)
                                             step = 0
                                             step_right = 0
 
@@ -649,8 +648,6 @@ def main():
                                             step_b = 0
                                             f_cycle = 1
                                             b_cycle = 1
-                                            # if a_cycle == 1:
-                                            #     a_cycle = 2
                                         else:
                                             print('stand by...11111')
                                 else:
@@ -831,8 +828,8 @@ def main():
                             break
                         elif r >= 5:
                             break
-                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True, total_time__gt=0) \
-                        .distinct().aggregate(Avg('total_time'))
+                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True,
+                                                          total_time__gt=0).distinct().aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
@@ -1054,12 +1051,7 @@ def main():
                     if has_run == 0:
                         x.run(x_step, 1)
                         has_run = 1
-                        # a_cycle = 2
                         sleep(1)
-                    # elif man_position == x_step * 2:
-                    #     x.run(x_step, -1)
-                    #     man_position -= x_step
-                    #     sleep(1)
                     # pre-start
                     r = 0
                     q += 1
@@ -1072,8 +1064,8 @@ def main():
                             break
                         elif r >= 5:
                             break
-                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True, total_time__gt=0) \
-                        .distinct().aggregate(Avg('total_time'))
+                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True,
+                                                          total_time__gt=0).distinct().aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
@@ -1318,16 +1310,7 @@ def main():
                     if has_run == 0:
                         x.run(x_step * 2, 1)
                         has_run = 1
-                        # a_cycle = 3
                         sleep(1)
-                    # if man_position == 0:
-                    #     x.run(x_step * 2, 1)
-                    #     man_position += x_step * 2
-                    #     sleep(1)
-                    # elif man_position == x_step:
-                    #     x.run(x_step, 1)
-                    #     man_position += x_step
-                    #     sleep(1)
                     # pre-start
                     r = 0
                     q += 1
@@ -1340,8 +1323,8 @@ def main():
                             break
                         elif r >= 5:
                             break
-                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True, total_time__gt=0) \
-                        .distinct().aggregate(Avg('total_time'))
+                    settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True,
+                                                          total_time__gt=0).distinct().aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
@@ -1585,33 +1568,11 @@ def main():
                         y.run(y_step, -1)
                         sleep(3)
                         y_position = 1
-                        # y_cycle = 1
                     print('position...4...')
                     if has_run == 0:
                         x.run(x_step * 2 + step_add, 1)
                         has_run = 1
-                        # a_cycle = 3
                         sleep(1)
-                    # if man_position == 0:
-                    #     x.run(x_step * 2 + step_add, 1)
-                    #     man_position += (x_step * 2 + step_add)
-                    #     sleep(1.5)
-                    # elif man_position == x_step:
-                    #     x.run(x_step + step_add, 1)
-                    #     man_position += (x_step + step_add)
-                    #     sleep(1.5)
-                    # elif man_position == x_step * 2:
-                    #     x.run(step_add, 1)
-                    #     man_position += step_add
-                    #     sleep(1.5)
-                    # elif man_position == x_step + step_add:
-                    #     x.run(x_step, 1)
-                    #     man_position += x_step
-                    #     sleep(1.5)
-                    # elif man_position == step_add:
-                    #     x.run(x_step * 2, 1)
-                    #     man_position += x_step * 2
-                    #     sleep(1.5)
                     # pre-start
                     r = 0
                     q += 1
@@ -1625,8 +1586,7 @@ def main():
                         elif r >= 5:
                             break
                     settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True,
-                                                          total_time__gt=0) \
-                        .distinct().aggregate(Avg('total_time'))
+                                                          total_time__gt=0).distinct().aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
@@ -1927,33 +1887,11 @@ def main():
                         y.run(y_step, -1)
                         sleep(3)
                         y_position = 1
-                        # y_cycle = 1
                     print('position...5...')
                     if has_run == 0:
                         x.run(x_step + step_add, 1)
                         has_run = 1
-                        # a_cycle = 2
                         sleep(1)
-                    # if man_position == 0:
-                    #     x.run(x_step + step_add, 1)
-                    #     man_position += (x_step + step_add)
-                    #     sleep(1.5)
-                    # elif man_position == x_step:
-                    #     x.run(step_add, 1)
-                    #     man_position += step_add
-                    #     sleep(1.5)
-                    # elif man_position == x_step * 2:
-                    #     x.run(x_step - step_add, -1)
-                    #     man_position += step_add
-                    #     sleep(1.5)
-                    # elif man_position == x_step + step_add:
-                    #     x.run(x_step, 1)
-                    #     man_position += x_step
-                    #     sleep(1.5)
-                    # if man_position == step_add:
-                    #     x.run(x_step * 2, 1)
-                    #     man_position += x_step * 2
-                    #     sleep(1.5)
                     # pre-start
                     r = 0
                     q += 1
@@ -1967,8 +1905,7 @@ def main():
                         elif r >= 5:
                             break
                     settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True,
-                                                          total_time__gt=0) \
-                        .distinct().aggregate(Avg('total_time'))
+                                                          total_time__gt=0).distinct().aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
@@ -2269,33 +2206,11 @@ def main():
                         y.run(y_step, -1)
                         sleep(3)
                         y_position = 1
-                        # y_cycle = 1
                     print('position...6...')
                     if has_run == 0:
                         x.run(step_add, 1)
                         has_run = 1
-                        # a_cycle = 1
                         sleep(1)
-                    # if man_position == 0:
-                    #     x.run(x_step + step_add, 1)
-                    #     man_position += (x_step + step_add)
-                    #     sleep(1.5)
-                    # elif man_position == x_step:
-                    #     x.run(step_add, 1)
-                    #     man_position += step_add
-                    #     sleep(1.5)
-                    # elif man_position == x_step * 2:
-                    #     x.run(x_step - step_add, -1)
-                    #     man_position += step_add
-                    #     sleep(1.5)
-                    # elif man_position == x_step + step_add:
-                    #     x.run(x_step, 1)
-                    #     man_position += x_step
-                    #     sleep(1.5)
-                    # if man_position == step_add:
-                    #     x.run(x_step * 2, 1)
-                    #     man_position += x_step * 2
-                    #     sleep(1.5)
                     # pre-start
                     r = 0
                     q += 1
@@ -2309,8 +2224,7 @@ def main():
                         elif r >= 5:
                             break
                     settled_list = Records.objects.filter(screw_type=screw_type, is_settled=True,
-                                                          total_time__gt=0) \
-                        .distinct().aggregate(Avg('total_time'))
+                                                          total_time__gt=0).distinct().aggregate(Avg('total_time'))
                     if settled_list['total_time__avg']:
                         avg_time = settled_list['total_time__avg']
                         print('%%%%%%%%%%%%%avg_time', avg_time)
