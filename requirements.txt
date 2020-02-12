@@ -3,7 +3,7 @@ backcall==0.1.0
 colorama==0.4.1
 colorzero==1.1
 decorator==4.4.0
-Django==2.2
+Django==2.2.10
 django-cors-headers==2.5.2
 django-extensions==2.1.6
 djangorestframework==3.9.2
